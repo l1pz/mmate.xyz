@@ -19,7 +19,7 @@ async function loadArt() {
 }
 
 export async function initAscii() {
-    const arts = ['portrait', 'escher', 'phone'];
+    const arts = ['portrait', 'escher', 'phone', 'wip'];
     for (const art of arts) {
         ascii[art] = await load(art);
     }

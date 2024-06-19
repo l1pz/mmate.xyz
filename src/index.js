@@ -32,9 +32,9 @@ async function main() {
     const cardContact = new Card(width, height, "contact", (card) => {
         card.drawAsciiArtCentered("phone");
         card.emptyLine(1);
-        card.drawTextCentered("phone: 0036 xx xxx xxxx");
+        card.drawTextCentered("phone: +36 xx xxx xxxx");
         card.emptyLine(1);
-        card.drawTextCentered("mail: me@mmate.xyz", "me@mmate.xyz", "https://google.com");
+        card.drawTextCentered("mail: mmateka89@gmail.com", "mmateka89@gmail.com", "mailto:mmateka89@gmail.com");
         card.emptyLine(1);
         card.drawTextCentered("feel free to message me");
         card.emptyLine(1);
