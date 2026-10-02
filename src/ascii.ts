@@ -1,27 +1,19 @@
+// ASCII art is bundled into the JS at build time (no runtime fetching).
+const files = import.meta.glob("./ascii-art/**/*.ascii", { query: "?raw", import: "default", eager: true }) as Record<
+    string,
+    string
+>;
+
 export const ascii: Record<string, string> = {};
+const gallery: string[] = [];
 
-async function load(name: string): Promise<string> {
-    const response = await fetch(`/ascii/${name}.ascii`);
-    return response.text();
+for (const [path, text] of Object.entries(files)) {
+    const name = path.replace("./ascii-art/", "").replace(".ascii", "");
+    if (name.startsWith("art/")) gallery.push(text);
+    else ascii[name] = text;
 }
 
-async function loadArt(): Promise<string> {
-    let index = 0;
-    const arts: string[] = [];
-    while (true) {
-        const response = await fetch(`/ascii/art/${index}.ascii`);
-        if (!response.ok) break;
-        arts.push(await response.text());
-        index++;
-    }
-    const randomIndex = Math.floor(Math.random() * arts.length);
-    return arts[randomIndex];
-}
-
-export async function initAscii(): Promise<void> {
-    const arts = ["portrait", "escher", "phone", "wip"];
-    for (const art of arts) {
-        ascii[art] = await load(art);
-    }
-    ascii["art"] = await loadArt();
+/** Picks a random piece for the "art" card. */
+export function initAscii(): void {
+    ascii.art = gallery[Math.floor(Math.random() * gallery.length)];
 }
