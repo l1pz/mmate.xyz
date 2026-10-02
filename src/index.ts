@@ -1,9 +1,9 @@
-import { initAscii } from './ascii.js';
-import Card from './card.js'
+import { initAscii } from "./ascii";
+import Card from "./card";
 
 document.addEventListener("DOMContentLoaded", main);
-async function main() {
-    await initAscii();
+function main() {
+    initAscii();
     const width = 41;
     const height = 32;
     const cardAboutMe = new Card(width, height, "about me", (card) => {
@@ -23,9 +23,9 @@ async function main() {
     const cardProjects = new Card(width, height, "projects", (card) => {
         card.drawAsciiArtCentered("escher");
         card.emptyLine(3);
-        card.drawTextCentered("github", "https://github.com/l1pz/");
+        card.drawTextCentered("github", { href: "https://github.com/l1pz/" });
         card.emptyLine(1);
-        card.drawTextCentered("experiments", "/experiments");
+        card.drawTextCentered("experiments", { href: "/experiments/" });
         card.emptyLine(4);
         card.drawBinaryTextCentered("bmljZSBjYXRjaA==");
     });
@@ -34,7 +34,10 @@ async function main() {
         card.emptyLine(1);
         card.drawTextCentered("phone: +36 xx xxx xxxx");
         card.emptyLine(1);
-        card.drawTextCentered("mail: mmateka89@gmail.com", "mmateka89@gmail.com", "mailto:mmateka89@gmail.com");
+        card.drawTextCentered("mail: mmateka89@gmail.com", {
+            label: "mmateka89@gmail.com",
+            href: "mailto:mmateka89@gmail.com",
+        });
         card.emptyLine(1);
         card.drawTextCentered("feel free to message me");
         card.emptyLine(1);
@@ -44,8 +47,8 @@ async function main() {
         card.emptyLine(2);
         card.drawAsciiArtCentered("art");
     });
-    cardAboutMe.render(document.querySelector("#aboutme"));
-    cardProjects.render(document.querySelector("#projects"));
-    cardContact.render(document.querySelector("#contact"));
-    cardArt.render(document.querySelector("#art"));
+    cardAboutMe.render(document.querySelector("#aboutme")!);
+    cardProjects.render(document.querySelector("#projects")!);
+    cardContact.render(document.querySelector("#contact")!);
+    cardArt.render(document.querySelector("#art")!);
 }

@@ -1,9 +1,9 @@
-import { initAscii } from './ascii.js';
-import Card from './card.js'
+import { initAscii } from "./ascii";
+import Card from "./card";
 
 document.addEventListener("DOMContentLoaded", main);
-async function main() {
-    await initAscii();
+function main() {
+    initAscii();
     const width = 41;
     const height = 32;
     const cardWIP = new Card(width, height, "work in progress", (card) => {
@@ -12,5 +12,5 @@ async function main() {
         card.emptyLine(3);
         card.drawBinaryTextCentered("i promise i will finish this");
     });
-    cardWIP.render(document.querySelector("#wip"));
+    cardWIP.render(document.querySelector("#wip")!);
 }
