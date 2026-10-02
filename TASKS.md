@@ -10,6 +10,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [x] Review and approve the "feature modules" plan in `ARCHITECTURE.md`
 - [x] Add GitHub Actions CI running `npm run check`; decide hosting and add deploy
 - [x] Fill in real contact info (phone placeholder) and make the `<noscript>` fallback match the JS cards (consider generating it at build time)
+- [ ] Tiny: bring back the fake phone line `phone: +36 xx xxx xxxx` (the +36 shows Hungary; never a real number) in the JS contact card and the `<noscript>` copy. Keep it the same in both and keep the card at 32 rows x 41 cols (remove the 2 extra blank rows added before the binary footer)
 
 ## Phase 1: Engine polish
 - [ ] Decide: bring back ASCII borders on cards? (see DECISIONS.md)
