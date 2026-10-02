@@ -1,11 +1,14 @@
-import type { BorderStyle } from "./borders";
+import { type BorderStyle, borders } from "./borders";
 import Card from "./card";
 
 export const CARD_WIDTH = 41;
 export const CARD_HEIGHT = 32;
 
-/** The home page cards, keyed by the id of the element each one is rendered into. `initAscii()` must have run. */
-export function buildHomeCards(border: BorderStyle | null): Record<string, Card> {
+/**
+ * The home page cards, keyed by the id of the element each one is rendered into. `initAscii()` must have run.
+ * The border is hardcoded here (rounded) so the JS cards and the generated <noscript> cards always match.
+ */
+export function buildHomeCards(border: BorderStyle | null = borders.rounded): Record<string, Card> {
     const make = (title: string, draw: (card: Card) => void) => new Card(CARD_WIDTH, CARD_HEIGHT, title, draw, border);
     return {
         aboutme: make("about me", (card) => {
