@@ -40,11 +40,3 @@
     font-style: normal;
     font-display: swap;
 }
-/* DejaVu Sans Mono 2.37, full glyph set (box drawing, blocks, geometric shapes). License: DEJAVU-LICENSE.txt */
-@font-face {
-    font-family: "DejaVu Sans Mono";
-    src: url("DejaVuSansMono.woff2") format("woff2");
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}

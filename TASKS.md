@@ -15,7 +15,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ## Phase 1: Engine polish
 - [x] Border styles (none, retro, ascii, single, double, rounded); rounded is hardcoded, toggle removed
 - [x] Pick a font with full box-drawing coverage (DejaVu Sans Mono) and fix the `/fonts/stylesheet.css` 404 (fonts moved to `public/fonts/`)
-- [ ] JGS font toggle next to Space Mono
+- [x] Use the JGS font only (jgs7 at 14px), no toggle
 
 ## Phase 2: Blog
 - [ ] Markdown loader + frontmatter (title, date, tags, slug)
@@ -62,4 +62,8 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 
 ### Session 4b (2026-10-02)
 - Done: `<noscript>` cards are generated from `src/cards.ts` by `plugins/noscript-cards.js` (build and dev); 128 hand-written lines gone; build test covers it. Restart a running `npm run dev` to load the plugin.
-- Next: Phase 1, "JGS font toggle next to Space Mono" (first unchecked; Space Mono was replaced by DejaVu Sans Mono, so reword it with the user first).
+- Next: Phase 2, "Markdown loader + frontmatter" (first unchecked).
+
+### Session 4c (2026-10-02)
+- Done: site font is now JGS (`jgs7`, 14px, 7px cells); DejaVu removed. No toggle. Text with ő/ű would fall back to another font (jgs7 lacks them); á é are fine.
+- Next: Phase 2, "Markdown loader + frontmatter" (needs a user plan first, shown in the terminal).

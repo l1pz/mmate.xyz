@@ -18,7 +18,7 @@ describe("production build", () => {
 
     it("ships the fonts the CSS asks for", () => {
         expect(existsSync("dist/fonts/stylesheet.css")).toBe(true);
-        expect(existsSync("dist/fonts/DejaVuSansMono.woff2")).toBe(true);
+        expect(existsSync("dist/fonts/jgs7.woff2")).toBe(true);
     });
 
     it("generates the <noscript> cards from the same code as the JS cards", () => {

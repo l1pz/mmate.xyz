@@ -23,7 +23,7 @@ src/cards.ts                            the home page cards (buildHomeCards, rou
 plugins/noscript-cards.js               build/dev plugin: fills the <noscript> block of index.html from buildHomeCards
 src/index.ts                            home page: renders the cards with the rounded border (hardcoded)
 styles/                                 reset, theme (Gruvbox variables), card layout
-public/fonts/                           self-hosted fonts (DejaVu Sans Mono + JGS pixel fonts), copied as-is to dist/fonts
+public/fonts/                           self-hosted fonts (JGS pixel fonts; the site uses jgs7 at 14px), copied as-is to dist/fonts
 tests/                                  vitest: card engine, borders, home cards in every border style, production-build guard
 ```
 
