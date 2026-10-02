@@ -19,7 +19,6 @@ const corners = (c: string) => ({ tl: c, tr: c, bl: c, br: c, teeLeft: c, teeRig
 
 export const borders: Record<string, BorderStyle | null> = {
     none: null,
-    // The original frame, still used by the old <noscript> cards.
     retro: { ...corners("0"), horizontal: "-", vertical: "|" },
     ascii: { ...corners("+"), horizontal: "-", vertical: "|" },
     // The styles below need a font with box drawing characters (see DECISIONS.md).
@@ -27,8 +26,3 @@ export const borders: Record<string, BorderStyle | null> = {
     double: { tl: "╔", tr: "╗", bl: "╚", br: "╝", teeLeft: "╠", teeRight: "╣", horizontal: "═", vertical: "║" },
     rounded: { tl: "╭", tr: "╮", bl: "╰", br: "╯", teeLeft: "├", teeRight: "┤", horizontal: "─", vertical: "│" },
 };
-
-/** Style names in the order the toggle cycles through them. */
-export const borderNames = Object.keys(borders);
-
-export const defaultBorder = "none";

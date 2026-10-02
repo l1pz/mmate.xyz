@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { ascii } from "../src/ascii";
-import { borderNames, borders } from "../src/borders";
+import { borders } from "../src/borders";
 import Card from "../src/card";
 
 beforeAll(() => {
@@ -10,8 +10,7 @@ beforeAll(() => {
 const lines = (card: Card) => card.toString().split("\n").slice(0, -1);
 
 describe("border styles", () => {
-    it("lists none first and keeps the default plain", () => {
-        expect(borderNames[0]).toBe("none");
+    it("has a plain none style", () => {
         expect(borders.none).toBeNull();
     });
 

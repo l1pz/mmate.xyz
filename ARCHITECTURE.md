@@ -19,12 +19,11 @@ src/ascii-art/                        ASCII art (.ascii), bundled at build time
 src/ascii.ts                            loads the bundled art
 src/card.ts                             card engine
 src/borders.ts                          border styles (plain data; add a style = add an entry)
-src/settings.ts                         border setting: cycle, load/save in localStorage (safe if blocked)
 src/cards.ts                            the home page cards (buildHomeCards)
-src/index.ts                            home page: renders cards, border toggle (key `b` or the footer button)
-styles/                                 reset, theme (Gruvbox variables), card layout, settings (border toggle)
+src/index.ts                            home page: renders the cards with the rounded border (hardcoded)
+styles/                                 reset, theme (Gruvbox variables), card layout
 public/fonts/                           self-hosted fonts (DejaVu Sans Mono + JGS pixel fonts), copied as-is to dist/fonts
-tests/                                  vitest: card engine, borders, settings, home cards in every border style, production-build guard
+tests/                                  vitest: card engine, borders, home cards in every border style, production-build guard
 ```
 
 ## Layout
