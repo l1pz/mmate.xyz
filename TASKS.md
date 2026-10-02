@@ -32,7 +32,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [ ] Gallery card, dither/ASCII <-> raw photo view, albums
 
 ## Phase 5: Polish
-- [ ] "Oracle" AI companion (needs a backend/proxy decision first)
+- [ ] "Oracle": a small model thinking out loud 24/7, streamed to a card. One generator on the server (llama.cpp, in-process via llama-cpp-python, FastAPI, SSE broadcast, ring buffer so new visitors see text at once, connection cap, heartbeat), no visitor input. Output must be coherent: test candidate models (SmolLM2-360M, Llama 3.2 1B, Qwen2.5 1.5B, Gemma 3 1B) before choosing; RAM budget ~1.5 GB, low CPU (nice 19, throttled tokens, optional pause when nobody watches), Docker mem/cpu limits, Traefik, canned-line fallback in the card
 - [ ] CRT scanline/glow toggle
 - [ ] Optional key-click sounds
 
