@@ -22,7 +22,8 @@ src/borders.ts                          border styles (plain data; add a style =
 src/settings.ts                         border setting: cycle, load/save in localStorage (safe if blocked)
 src/cards.ts                            the home page cards (buildHomeCards)
 src/index.ts                            home page: renders cards, border toggle (key `b` or the footer button)
-styles/                                 reset, theme (Gruvbox variables), card layout
+styles/                                 reset, theme (Gruvbox variables), card layout, settings (toggle, card gap)
+public/fonts/                           self-hosted fonts (DejaVu Sans Mono + JGS pixel fonts), copied as-is to dist/fonts
 tests/                                  vitest: card engine, borders, settings, home cards in every border style, production-build guard
 ```
 

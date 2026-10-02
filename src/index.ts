@@ -15,6 +15,7 @@ function main() {
             const el = document.querySelector(`#${id}`);
             if (el) card.render(el);
         }
+        document.documentElement.dataset.border = border;
         if (toggle) toggle.textContent = `[b] border: ${border}`;
     };
 

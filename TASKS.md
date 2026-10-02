@@ -14,7 +14,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 
 ## Phase 1: Engine polish
 - [x] Border styles + toggle (retro, ascii, single, double, rounded; default none)
-- [ ] Pick a font with full box-drawing/block/braille coverage so the unicode border styles never misalign (see DECISIONS.md); also fix `/fonts/stylesheet.css` 404 in production (fonts live outside `public/`)
+- [x] Pick a font with full box-drawing coverage (DejaVu Sans Mono) and fix the `/fonts/stylesheet.css` 404 (fonts moved to `public/fonts/`)
 - [ ] Binary footer decode animation on hover/click
 - [ ] JGS font toggle next to Space Mono
 
@@ -59,3 +59,4 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ### Session 4 (2026-10-02)
 - Done: optional border styles (`src/borders.ts`), setting + toggle (`src/settings.ts`, key `b` + footer button), home cards moved to `src/cards.ts`, tests for all of it; noscript cards now unframed.
 - Next: font task above (user decides which font); check the unicode border styles in `npm run dev` first.
+- Also done (same PR): DejaVu Sans Mono replaces Space Mono (fixes the unicode border styles); `fonts/` moved to `public/fonts/` (was 404 in production); cards get a gap when a border is on. Checked `double` and `rounded` in Chrome.
