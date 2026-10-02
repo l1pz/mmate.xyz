@@ -16,8 +16,7 @@
     .card-container {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        grid-column-gap: 0px;
-        grid-row-gap: 0px;
+        gap: 1em 2ch;
     }
 
     .card-container > * {
@@ -35,8 +34,7 @@
     .card-container {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-column-gap: 0px;
-        grid-row-gap: 0px;
+        gap: 1em 2ch;
     }
 }
 
@@ -45,8 +43,7 @@
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         grid-template-rows: repeat(2, 1fr);
-        grid-column-gap: 0px;
-        grid-row-gap: 0px;
+        gap: 1em 2ch;
     }
 }
 
@@ -54,7 +51,6 @@
     .card-container {
         display: grid;
         grid-template-columns: 1fr;
-        grid-column-gap: 0px;
-        grid-row-gap: 0px;
+        gap: 1em 2ch;
     }
 }

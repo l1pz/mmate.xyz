@@ -1,54 +1,13 @@
 import { initAscii } from "./ascii";
-import Card from "./card";
+import { borders } from "./borders";
+import { buildHomeCards } from "./cards";
 
 document.addEventListener("DOMContentLoaded", main);
+
 function main() {
     initAscii();
-    const width = 41;
-    const height = 32;
-    const cardAboutMe = new Card(width, height, "about me", (card) => {
-        card.emptyLine(2);
-        card.drawAsciiArtCentered("portrait");
-        card.emptyLine(2);
-        card.drawTextCentered("máté molnár");
-        card.emptyLine(1);
-        card.drawTextCentered(`about ${new Date().getFullYear() - 2002} years old`);
-        card.emptyLine(1);
-        card.drawTextCentered("computer enthusiast");
-        card.emptyLine(1);
-        card.drawTextCentered("recreational programmer");
-        card.emptyLine(2);
-        card.drawBinaryTextCentered("i'm proud of you");
-    });
-    const cardProjects = new Card(width, height, "projects", (card) => {
-        card.drawAsciiArtCentered("escher");
-        card.emptyLine(3);
-        card.drawTextCentered("github", { href: "https://github.com/l1pz/" });
-        card.emptyLine(1);
-        card.drawTextCentered("experiments", { href: "/experiments/" });
-        card.emptyLine(4);
-        card.drawBinaryTextCentered("bmljZSBjYXRjaA==");
-    });
-    const cardContact = new Card(width, height, "contact", (card) => {
-        card.drawAsciiArtCentered("phone");
-        card.emptyLine(1);
-        card.drawTextCentered("phone: +36 xx xxx xxxx");
-        card.emptyLine(1);
-        card.drawTextCentered("mail: mmateka89@gmail.com", {
-            label: "mmateka89@gmail.com",
-            href: "mailto:mmateka89@gmail.com",
-        });
-        card.emptyLine(1);
-        card.drawTextCentered("feel free to message me");
-        card.emptyLine(1);
-        card.drawBinaryTextCentered("0680442044callme");
-    });
-    const cardArt = new Card(width, height, "l'art pour l'art", (card) => {
-        card.emptyLine(2);
-        card.drawAsciiArtCentered("art");
-    });
-    cardAboutMe.render(document.querySelector("#aboutme")!);
-    cardProjects.render(document.querySelector("#projects")!);
-    cardContact.render(document.querySelector("#contact")!);
-    cardArt.render(document.querySelector("#art")!);
+    for (const [id, card] of Object.entries(buildHomeCards(borders.rounded))) {
+        const el = document.querySelector(`#${id}`);
+        if (el) card.render(el);
+    }
 }

@@ -10,6 +10,7 @@ Pure logic, fully tested (`tests/card.test.ts`). The only DOM touch is `render()
 - `link = { href, label? }`: `label` is the part of the text that becomes the link.
 - Drawing outside the grid throws `RangeError` (so overflow is a loud bug, not silent corruption). Columns are clipped.
 - `toString()` plain text, `toHtml()` escaped HTML with `<a>` tags, `render(el)` mounts a `<pre>`.
+- Optional 5th constructor argument `border` (a `BorderStyle` from `src/borders.ts`, or null/omitted for none). The frame is drawn after the content on rows 0, 2 and the last row plus the first/last column; if content already uses one of those cells it throws `RangeError`. Content area is therefore rows 3 to rows-2, cols 1 to cols-2 when a border is on.
 
 ## Files
 ```
@@ -17,9 +18,12 @@ index.html, experiments/**/index.html   pages (all listed in vite.config.js)
 src/ascii-art/                        ASCII art (.ascii), bundled at build time
 src/ascii.ts                            loads the bundled art
 src/card.ts                             card engine
-src/index.ts                            home page cards
+src/borders.ts                          border styles (plain data; add a style = add an entry)
+src/cards.ts                            the home page cards (buildHomeCards)
+src/index.ts                            home page: renders the cards with the rounded border (hardcoded)
 styles/                                 reset, theme (Gruvbox variables), card layout
-tests/                                  vitest: card engine + production-build guard
+public/fonts/                           self-hosted fonts (DejaVu Sans Mono + JGS pixel fonts), copied as-is to dist/fonts
+tests/                                  vitest: card engine, borders, home cards in every border style, production-build guard
 ```
 
 ## Layout

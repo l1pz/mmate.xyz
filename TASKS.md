@@ -13,7 +13,8 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [x] Tiny: bring back the fake phone line `phone: +36 xx xxx xxxx` (the +36 shows Hungary; never a real number) in the JS contact card and the `<noscript>` copy. Keep it the same in both and keep the card at 32 rows x 41 cols (remove the 2 extra blank rows added before the binary footer)
 
 ## Phase 1: Engine polish
-- [ ] Decide: bring back ASCII borders on cards? (see DECISIONS.md)
+- [x] Border styles (none, retro, ascii, single, double, rounded); rounded is hardcoded, toggle removed
+- [x] Pick a font with full box-drawing coverage (DejaVu Sans Mono) and fix the `/fonts/stylesheet.css` 404 (fonts moved to `public/fonts/`)
 - [ ] Binary footer decode animation on hover/click
 - [ ] JGS font toggle next to Space Mono
 
@@ -54,3 +55,8 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ### Session 3b (2026-10-02)
 - Done: fake `phone: +36 xx xxx xxxx` restored in JS card and noscript; the 2 extra blank rows removed; `npm run check` passes. Not yet eyeballed in `npm run dev`.
 - Next: Phase 1, "Decide: bring back ASCII borders on cards?" (needs a user decision).
+
+### Session 4 (2026-10-02)
+- Done: border styles as data (`src/borders.ts`), home cards in `src/cards.ts`, tests for all styles; rounded hardcoded; noscript cards carry the same frame. Toggle was built and removed.
+- Next: Phase 1 binary footer decode animation (first unchecked).
+- Also done: DejaVu Sans Mono replaces Space Mono (fixes unicode borders); `fonts/` moved to `public/fonts/` (was 404 in prod); one constant card gap (`gap: 1em 2ch`). Unifont tried and rejected.

@@ -5,7 +5,7 @@ const files = import.meta.glob("./ascii-art/**/*.ascii", { query: "?raw", import
 >;
 
 export const ascii: Record<string, string> = {};
-const gallery: string[] = [];
+export const gallery: string[] = [];
 
 for (const [path, text] of Object.entries(files)) {
     const name = path.replace("./ascii-art/", "").replace(".ascii", "");
