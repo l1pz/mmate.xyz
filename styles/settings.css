@@ -16,8 +16,3 @@
     color: var(--green);
     opacity: 1;
 }
-
-/* Framed cards need breathing room; unframed cards stay flush like before. */
-html:not([data-border="none"]) .card-container {
-    gap: 1em 2ch;
-}

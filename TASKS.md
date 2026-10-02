@@ -59,4 +59,4 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ### Session 4 (2026-10-02)
 - Done: optional border styles (`src/borders.ts`), setting + toggle (`src/settings.ts`, key `b` + footer button), home cards moved to `src/cards.ts`, tests for all of it; noscript cards now unframed.
 - Next: font task above (user decides which font); check the unicode border styles in `npm run dev` first.
-- Also done (same PR): DejaVu Sans Mono replaces Space Mono (fixes the unicode border styles); `fonts/` moved to `public/fonts/` (was 404 in production); cards get a gap when a border is on. Checked `double` and `rounded` in Chrome.
+- Also done (same PR): DejaVu Sans Mono replaces Space Mono (fixes the unicode border styles); `fonts/` moved to `public/fonts/` (was 404 in production); cards have one constant gap (`gap: 1em 2ch` in card.css) whatever the border. Checked `double` and `rounded` in Chrome.
