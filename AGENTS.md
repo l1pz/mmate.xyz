@@ -1,4 +1,4 @@
-# AI Working Guide: mmate.xyz
+# AI Working Guide: 1000110.xyz
 
 Personal website of Máté Molnár: a retro ASCII terminal / cyberdeck made of text cards, growing into a blog, tools and experiments.
 

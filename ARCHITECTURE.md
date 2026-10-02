@@ -1,4 +1,4 @@
-# Architecture: mmate.xyz
+# Architecture: 1000110.xyz
 
 ## Core idea
 A card is a fixed grid of characters (default 41 x 32), like a text-mode terminal screen. Pages are grids of cards.
