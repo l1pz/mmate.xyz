@@ -13,7 +13,8 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [x] Tiny: bring back the fake phone line `phone: +36 xx xxx xxxx` (the +36 shows Hungary; never a real number) in the JS contact card and the `<noscript>` copy. Keep it the same in both and keep the card at 32 rows x 41 cols (remove the 2 extra blank rows added before the binary footer)
 
 ## Phase 1: Engine polish
-- [ ] Decide: bring back ASCII borders on cards? (see DECISIONS.md)
+- [x] Border styles + toggle (retro, ascii, single, double, rounded; default none)
+- [ ] Pick a font with full box-drawing/block/braille coverage so the unicode border styles never misalign (see DECISIONS.md); also fix `/fonts/stylesheet.css` 404 in production (fonts live outside `public/`)
 - [ ] Binary footer decode animation on hover/click
 - [ ] JGS font toggle next to Space Mono
 
@@ -54,3 +55,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ### Session 3b (2026-10-02)
 - Done: fake `phone: +36 xx xxx xxxx` restored in JS card and noscript; the 2 extra blank rows removed; `npm run check` passes. Not yet eyeballed in `npm run dev`.
 - Next: Phase 1, "Decide: bring back ASCII borders on cards?" (needs a user decision).
+
+### Session 4 (2026-10-02)
+- Done: optional border styles (`src/borders.ts`), setting + toggle (`src/settings.ts`, key `b` + footer button), home cards moved to `src/cards.ts`, tests for all of it; noscript cards now unframed.
+- Next: font task above (user decides which font); check the unicode border styles in `npm run dev` first.

@@ -1,4 +1,5 @@
 import { ascii } from "./ascii";
+import type { BorderStyle } from "./borders";
 
 export interface Link {
     /** Part of the text that becomes the link. Defaults to the whole text. */
@@ -24,13 +25,14 @@ export default class Card {
     #currentRow = 3;
     #links: PlacedLink[] = [];
 
-    constructor(cols: number, rows: number, title: string, draw: (card: Card) => void) {
+    constructor(cols: number, rows: number, title: string, draw: (card: Card) => void, border?: BorderStyle | null) {
         this.cols = cols;
         this.rows = rows;
         this.#title = title;
         this.#canvas = Array.from({ length: rows }, () => new Array<string>(cols).fill(" "));
         this.#drawText(this.#title, this.#centerCol(this.#title), 1);
         draw(this);
+        if (border) this.#drawFrame(border);
     }
 
     toString(): string {
@@ -101,6 +103,29 @@ export default class Card {
 
     #centerCol(text: string): number {
         return Math.floor(this.cols / 2) - Math.floor(text.length / 2);
+    }
+
+    /**
+     * Frame on the outer rows/columns plus a divider under the title (row 2).
+     * Drawn after the content, and it throws if the content already uses a frame cell.
+     */
+    #drawFrame(b: BorderStyle): void {
+        const last = this.cols - 1;
+        const bottom = this.rows - 1;
+        const put = (row: number, col: number, c: string) => {
+            if (this.#canvas[row][col] !== " ") {
+                throw new RangeError(`Card "${this.#title}": content overlaps the border at row ${row}, col ${col}`);
+            }
+            this.#canvas[row][col] = c;
+        };
+        for (let row = 0; row <= bottom; row++) {
+            const isLine = row === 0 || row === 2 || row === bottom;
+            const left = row === 0 ? b.tl : row === 2 ? b.teeLeft : row === bottom ? b.bl : b.vertical;
+            const right = row === 0 ? b.tr : row === 2 ? b.teeRight : row === bottom ? b.br : b.vertical;
+            put(row, 0, left);
+            put(row, last, right);
+            if (isLine) for (let col = 1; col < last; col++) put(row, col, b.horizontal);
+        }
     }
 
     #drawText(text: string, col: number, row: number): void {
