@@ -15,8 +15,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ## Phase 1: Engine polish
 - [x] Border styles (none, retro, ascii, single, double, rounded); rounded is hardcoded, toggle removed
 - [x] Pick a font with full box-drawing coverage (DejaVu Sans Mono) and fix the `/fonts/stylesheet.css` 404 (fonts moved to `public/fonts/`)
-- [ ] Binary footer decode animation on hover/click
-- [ ] JGS font toggle next to Space Mono
+- [x] JGS font: tried as the only font and rejected (hard to read); no toggle wanted, DejaVu Sans Mono stays
 
 ## Phase 2: Blog
 - [ ] Markdown loader + frontmatter (title, date, tags, slug)
@@ -60,3 +59,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - Done: border styles as data (`src/borders.ts`), home cards in `src/cards.ts`, tests for all styles; rounded hardcoded; noscript cards carry the same frame. Toggle was built and removed.
 - Next: Phase 1 binary footer decode animation (first unchecked).
 - Also done: DejaVu Sans Mono replaces Space Mono (fixes unicode borders); `fonts/` moved to `public/fonts/` (was 404 in prod); one constant card gap (`gap: 1em 2ch`). Unifont tried and rejected.
+
+### Session 4b (2026-10-02)
+- Done: `<noscript>` cards are generated from `src/cards.ts` by `plugins/noscript-cards.js` (build and dev); 128 hand-written lines gone; build test covers it. Restart a running `npm run dev` to load the plugin.
+- Next: Phase 2, "Markdown loader + frontmatter" (first unchecked; needs a plan shown in the terminal first).

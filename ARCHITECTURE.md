@@ -19,12 +19,16 @@ src/ascii-art/                        ASCII art (.ascii), bundled at build time
 src/ascii.ts                            loads the bundled art
 src/card.ts                             card engine
 src/borders.ts                          border styles (plain data; add a style = add an entry)
-src/cards.ts                            the home page cards (buildHomeCards)
+src/cards.ts                            the home page cards (buildHomeCards, rounded border hardcoded)
+plugins/noscript-cards.js               build/dev plugin: fills the <noscript> block of index.html from buildHomeCards
 src/index.ts                            home page: renders the cards with the rounded border (hardcoded)
 styles/                                 reset, theme (Gruvbox variables), card layout
 public/fonts/                           self-hosted fonts (DejaVu Sans Mono + JGS pixel fonts), copied as-is to dist/fonts
 tests/                                  vitest: card engine, borders, home cards in every border style, production-build guard
 ```
+
+## No-JS version
+`index.html` has `<!-- noscript-cards -->` inside `<noscript>`. `plugins/noscript-cards.js` (listed in `vite.config.js`) replaces it with `card.toHtml()` of every card from `buildHomeCards()`, loaded through Vite so `import.meta.glob` works. Never edit noscript cards by hand: change `src/cards.ts` and both versions follow. Build time values (the age line, the random art piece) are fixed per build. `tests/build.test.ts` checks the generated output.
 
 ## Layout
 CSS grid, 1 column (<750px), 2 (750-1099), 3 (1100-1499), 4 (>=1500). All cards are the same size.
