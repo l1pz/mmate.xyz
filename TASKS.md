@@ -10,7 +10,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [x] Review and approve the "feature modules" plan in `ARCHITECTURE.md`
 - [x] Add GitHub Actions CI running `npm run check`; decide hosting and add deploy
 - [x] Fill in real contact info (phone placeholder) and make the `<noscript>` fallback match the JS cards (consider generating it at build time)
-- [ ] Tiny: bring back the fake phone line `phone: +36 xx xxx xxxx` (the +36 shows Hungary; never a real number) in the JS contact card and the `<noscript>` copy. Keep it the same in both and keep the card at 32 rows x 41 cols (remove the 2 extra blank rows added before the binary footer)
+- [x] Tiny: bring back the fake phone line `phone: +36 xx xxx xxxx` (the +36 shows Hungary; never a real number) in the JS contact card and the `<noscript>` copy. Keep it the same in both and keep the card at 32 rows x 41 cols (remove the 2 extra blank rows added before the binary footer)
 
 ## Phase 1: Engine polish
 - [ ] Decide: bring back ASCII borders on cards? (see DECISIONS.md)
@@ -49,4 +49,8 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 
 ### Session 3 (2026-10-02)
 - Done: phone removed (user won't share it), email is mmateka89@gmail.com in JS card and noscript; repo renamed to l1pz/1000110.xyz; `.gitattributes` forces LF (CRLF checkouts broke Biome on Windows). Noscript is still hand-written: generating it at build time stays an open idea.
+- Next: Phase 1, "Decide: bring back ASCII borders on cards?" (needs a user decision).
+
+### Session 3b (2026-10-02)
+- Done: fake `phone: +36 xx xxx xxxx` restored in JS card and noscript; the 2 extra blank rows removed; `npm run check` passes. Not yet eyeballed in `npm run dev`.
 - Next: Phase 1, "Decide: bring back ASCII borders on cards?" (needs a user decision).

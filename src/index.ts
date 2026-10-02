@@ -32,13 +32,15 @@ function main() {
     const cardContact = new Card(width, height, "contact", (card) => {
         card.drawAsciiArtCentered("phone");
         card.emptyLine(1);
+        card.drawTextCentered("phone: +36 xx xxx xxxx");
+        card.emptyLine(1);
         card.drawTextCentered("mail: mmateka89@gmail.com", {
             label: "mmateka89@gmail.com",
             href: "mailto:mmateka89@gmail.com",
         });
         card.emptyLine(1);
         card.drawTextCentered("feel free to message me");
-        card.emptyLine(3);
+        card.emptyLine(1);
         card.drawBinaryTextCentered("0680442044callme");
     });
     const cardArt = new Card(width, height, "l'art pour l'art", (card) => {
