@@ -2,8 +2,8 @@ import { initAscii } from "./ascii";
 import Card from "./card";
 
 document.addEventListener("DOMContentLoaded", main);
-async function main() {
-    await initAscii();
+function main() {
+    initAscii();
     const width = 41;
     const height = 32;
     const cardWIP = new Card(width, height, "work in progress", (card) => {

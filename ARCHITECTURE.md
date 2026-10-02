@@ -14,8 +14,8 @@ Pure logic, fully tested (`tests/card.test.ts`). The only DOM touch is `render()
 ## Files
 ```
 index.html, experiments/**/index.html   pages (all listed in vite.config.js)
-public/ascii/                           ASCII art, fetched at runtime from /ascii/
-src/ascii.ts                            ASCII loader
+src/ascii-art/                        ASCII art (.ascii), bundled at build time
+src/ascii.ts                            loads the bundled art
 src/card.ts                             card engine
 src/index.ts                            home page cards
 styles/                                 reset, theme (Gruvbox variables), card layout
