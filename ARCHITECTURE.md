@@ -25,7 +25,7 @@ tests/                                  vitest: card engine + production-build g
 ## Layout
 CSS grid, 1 column (<750px), 2 (750-1099), 3 (1100-1499), 4 (>=1500). All cards are the same size.
 
-## Planned: feature modules (PROPOSED, needs user approval)
+## Planned: feature modules (APPROVED 2026-10-02, not yet implemented)
 Each feature (blog, tools, gallery, oracle) is a folder `src/features/<name>/` exporting one object:
 ```ts
 export default {

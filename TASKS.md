@@ -7,7 +7,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [x] TypeScript, Biome, Vitest, `npm run check`, build guard test
 - [x] `public/` assets, multi-page `vite.config.js`, CSS color variables
 - [x] Card engine rewritten: no duplicate methods, escaped HTML, bounds errors, tests
-- [ ] Review and approve the "feature modules" plan in `ARCHITECTURE.md`
+- [x] Review and approve the "feature modules" plan in `ARCHITECTURE.md`
 - [ ] Add GitHub Actions CI running `npm run check`; decide hosting and add deploy
 - [ ] Fill in real contact info (phone placeholder) and make the `<noscript>` fallback match the JS cards (consider generating it at build time)
 
@@ -40,3 +40,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ### Session 1 (2026-10-02)
 - Done: Phase 0 foundation above (branch `chore/foundation`). `npm run check` passes.
 - Next: user reviews the feature-module plan; then CI/hosting.
+
+### Session 2 (2026-10-02)
+- Done: user approved the feature-module plan; recorded in DECISIONS.md, ARCHITECTURE.md marked approved.
+- Next: GitHub Actions CI + hosting decision (needs user input on host).
