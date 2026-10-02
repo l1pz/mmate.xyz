@@ -18,7 +18,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [x] JGS font: tried as the only font and rejected (hard to read); no toggle wanted, DejaVu Sans Mono stays
 
 ## Phase 2: Blog
-- [ ] Markdown loader + frontmatter (title, date, tags, slug)
+- [x] Markdown loader + frontmatter (title, date, tags, slug)
 - [ ] Blog card on home grid
 - [ ] TUI reading view with progress meter
 - [ ] RSS feed script
@@ -63,3 +63,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ### Session 4b (2026-10-02)
 - Done: `<noscript>` cards are generated from `src/cards.ts` by `plugins/noscript-cards.js` (build and dev); 128 hand-written lines gone; build test covers it. Restart a running `npm run dev` to load the plugin.
 - Next: Phase 2, "Markdown loader + frontmatter" (first unchecked; needs a plan shown in the terminal first).
+
+### Session 5 (2026-10-02)
+- Done: blog loader in `src/features/blog/` (`frontmatter.ts` hand-written parser, `posts.ts` bundles `posts/*.md` via glob, `getPosts()` newest first, `getPost(slug)`); sample post and tests. `npm run check` passes.
+- Next: Phase 2, "Blog card on home grid" (needs the feature module `card()` export and a plan shown in the terminal first).
