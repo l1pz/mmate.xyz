@@ -1,5 +1,5 @@
-import { initAscii } from './ascii.js';
-import Card from './card.js'
+import { initAscii } from "./ascii";
+import Card from "./card";
 
 document.addEventListener("DOMContentLoaded", main);
 async function main() {
@@ -12,5 +12,5 @@ async function main() {
         card.emptyLine(3);
         card.drawBinaryTextCentered("i promise i will finish this");
     });
-    cardWIP.render(document.querySelector("#wip"));
+    cardWIP.render(document.querySelector("#wip")!);
 }

@@ -1,14 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
+/* Gruvbox Dark. Use these variables, never raw hex values, anywhere else. */
 :root {
+    --bg: #282828;
+    --fg: #ebdbb2;
+    --aqua: #8ec07c;
+    --green: #b8bb26;
+    --yellow: #fabd2f;
+    --purple: #d3869b;
+    --red: #fb4934;
     --font-size: 14px;
     --font: "Space Mono", monospace !important;
 }
 
 html {
     font-family: var(--font);
-    background-color: #282828;
-    color: #EBDBB2;
+    background-color: var(--bg);
+    color: var(--fg);
     font-size: var(--font-size);
     line-height: 1em !important;
     user-select: none;
@@ -26,17 +34,17 @@ body {
 }
 
 a:visited {
-    color: #D3869B;
+    color: var(--purple);
 }
 
 a:link {
-    color: #8EC07C;
+    color: var(--aqua);
 }
 
 a:hover {
-    color: #B8BB26;
+    color: var(--green);
 }
 
 a:active {
-    color: #FABD2F;
+    color: var(--yellow);
 }

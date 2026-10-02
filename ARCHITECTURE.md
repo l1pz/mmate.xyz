@@ -1,67 +1,37 @@
-# Architecture & System Design — mmate.xyz
+# Architecture: mmate.xyz
 
-## 1. Overview
-`mmate.xyz` is built on a virtual text-buffer architecture designed to emulate hardware text-mode terminals within the modern web browser.
+## Core idea
+A card is a fixed grid of characters (default 41 x 32), like a text-mode terminal screen. Pages are grids of cards.
 
----
+## Card engine (`src/card.ts`)
+Pure logic, fully tested (`tests/card.test.ts`). The only DOM touch is `render()`.
+- `new Card(cols, rows, title, draw)`: title on row 1, drawing starts at row 3.
+- `drawTextCentered(text, link?)`, `drawAsciiArtCentered(name)`, `drawBinaryTextCentered(text)`, `emptyLine(n)`: each draws at the current row and moves down.
+- `link = { href, label? }`: `label` is the part of the text that becomes the link.
+- Drawing outside the grid throws `RangeError` (so overflow is a loud bug, not silent corruption). Columns are clipped.
+- `toString()` plain text, `toHtml()` escaped HTML with `<a>` tags, `render(el)` mounts a `<pre>`.
 
-## 2. Core Abstractions
-
-### The Virtual Text Canvas (`src/card.js`)
-Each card is represented as a 2D character matrix (`cols` × `rows`, standard 41 × 32):
-
+## Files
 ```
-+---------------------------------------+  Row 0: 0-------------------0
-|               about me                |  Row 1: |     title         |
-+---------------------------------------+  Row 2: 0-------------------0
-|                                       |  Row 3: Content area starts
-|               ASCII ART               |
-|                                       |
-|              Máté Molnár              |
-|                                       |
-|  01101001 00100111 01101101 00100000  |  Row 30: Binary footer
-+---------------------------------------+  Row 31: 0-------------------0
+index.html, experiments/**/index.html   pages (all listed in vite.config.js)
+public/ascii/                           ASCII art, fetched at runtime from /ascii/
+src/ascii.ts                            ASCII loader
+src/card.ts                             card engine
+src/index.ts                            home page cards
+styles/                                 reset, theme (Gruvbox variables), card layout
+tests/                                  vitest: card engine + production-build guard
 ```
 
-#### Canvas API Primitives:
-- `fill(char)`: Fills entire canvas with whitespace or a pattern.
-- `drawLineH(startCol, endCol, row)`: Draws horizontal boundary `0---0`.
-- `drawLineV(startRow, endRow, col)`: Draws vertical boundary `|`.
-- `drawTextCentered(text, options)`: Centers text horizontally at the current row.
-- `drawAsciiArtCentered(artName)`: Renders multi-line ASCII art centered.
-- `drawBinaryTextCentered(text)`: Converts string to 8-bit binary chunks and renders centered.
-- `render(parentElement)`: Serializes canvas matrix to string, binds hyperlinks, and mounts `<pre>` into DOM.
+## Layout
+CSS grid, 1 column (<750px), 2 (750-1099), 3 (1100-1499), 4 (>=1500). All cards are the same size.
 
----
-
-## 3. Layout & Responsiveness
-The site uses CSS Grid with character-based sizing to ensure cards never stretch or break their monospace alignment:
-
-- **Mobile (< 750px)**: 1 column
-- **Tablet (750px – 1099px)**: 2 columns
-- **Desktop (1100px – 1499px)**: 3 columns
-- **Ultra-Wide (≥ 1500px)**: 4 columns
-
-All cards maintain identical fixed character dimensions (41 × 32 chars) so the grid remains visually balanced regardless of content.
-
----
-
-## 4. Planned Module Structure
-
+## Planned: feature modules (PROPOSED, needs user approval)
+Each feature (blog, tools, gallery, oracle) is a folder `src/features/<name>/` exporting one object:
+```ts
+export default {
+  id: "blog",
+  card(width, height): Card,        // the tile on the home grid
+  page?: { path: "/blog/", mount(el) }   // optional full-page view
+}
 ```
-mmate.xyz/
-├── index.html            # Main entry point & <noscript> cards
-├── AGENTS.md             # Project guidelines for AI pair programming
-├── ARCHITECTURE.md       # System design & specs (this file)
-├── TASKS.md              # Living task board & session handoffs
-├── ascii/                # Raw ASCII art text files (.ascii)
-├── fonts/                # JGS pixel fonts & Space Mono
-├── styles/               # CSS stylesheets (theme, reset, card)
-└── src/
-    ├── index.js          # Main entry & card orchestrator
-    ├── card.js           # Virtual text canvas engine
-    ├── ascii.js          # ASCII asset loader
-    ├── blog/             # Markdown parser & reading pager
-    ├── gallery/          # Dither & ASCII image visualizer
-    └── tools/            # Swiss Army Knife utilities
-```
+`src/index.ts` just imports the list of features and renders their cards. Features never import each other; shared code goes in `src/core/`. This keeps each AI session inside one folder.

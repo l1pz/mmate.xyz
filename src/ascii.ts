@@ -1,13 +1,13 @@
-export const ascii = {};
+export const ascii: Record<string, string> = {};
 
-async function load(name) {
+async function load(name: string): Promise<string> {
     const response = await fetch(`/ascii/${name}.ascii`);
     return response.text();
 }
 
-async function loadArt() {
+async function loadArt(): Promise<string> {
     let index = 0;
-    const arts = [];
+    const arts: string[] = [];
     while (true) {
         const response = await fetch(`/ascii/art/${index}.ascii`);
         if (!response.ok) break;
@@ -18,10 +18,10 @@ async function loadArt() {
     return arts[randomIndex];
 }
 
-export async function initAscii() {
-    const arts = ['portrait', 'escher', 'phone', 'wip'];
+export async function initAscii(): Promise<void> {
+    const arts = ["portrait", "escher", "phone", "wip"];
     for (const art of arts) {
         ascii[art] = await load(art);
     }
-    ascii['art'] = await loadArt();
+    ascii["art"] = await loadArt();
 }

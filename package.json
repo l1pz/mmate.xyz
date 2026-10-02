@@ -1,14 +1,23 @@
 {
-  "name": "mmate.xyz",
-  "version": "2.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "vite": "^6.0.0"
-  }
+    "name": "mmate.xyz",
+    "version": "2.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run",
+        "lint": "biome check .",
+        "format": "biome check --write .",
+        "check": "npm run lint && npm run typecheck && npm run test"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^2.5.15",
+        "@types/node": "^26.6.4",
+        "typescript": "^7.0.2",
+        "vite": "^6.0.0",
+        "vitest": "^5.0.3"
+    }
 }
