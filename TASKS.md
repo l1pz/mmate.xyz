@@ -8,7 +8,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [x] `public/` assets, multi-page `vite.config.js`, CSS color variables
 - [x] Card engine rewritten: no duplicate methods, escaped HTML, bounds errors, tests
 - [x] Review and approve the "feature modules" plan in `ARCHITECTURE.md`
-- [ ] Add GitHub Actions CI running `npm run check`; decide hosting and add deploy
+- [x] Add GitHub Actions CI running `npm run check`; decide hosting and add deploy
 - [ ] Fill in real contact info (phone placeholder) and make the `<noscript>` fallback match the JS cards (consider generating it at build time)
 
 ## Phase 1: Engine polish
@@ -43,4 +43,5 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 
 ### Session 2 (2026-10-02)
 - Done: user approved the feature-module plan; recorded in DECISIONS.md, ARCHITECTURE.md marked approved.
-- Next: GitHub Actions CI + hosting decision (needs user input on host).
+- Done: CI + deploy live. Merging to `main` rsyncs `dist/` to the netcup server (nginx container behind Traefik, `https://1000110.xyz`) as a restricted `deploy` user; see DECISIONS.md. Site renamed to 1000110.xyz.
+- Next: real contact info + noscript fallback (user must supply the contact details).
