@@ -8,8 +8,8 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [x] `public/` assets, multi-page `vite.config.js`, CSS color variables
 - [x] Card engine rewritten: no duplicate methods, escaped HTML, bounds errors, tests
 - [x] Review and approve the "feature modules" plan in `ARCHITECTURE.md`
-- [ ] Add GitHub Actions CI running `npm run check`; decide hosting and add deploy
-- [ ] Fill in real contact info (phone placeholder) and make the `<noscript>` fallback match the JS cards (consider generating it at build time)
+- [x] Add GitHub Actions CI running `npm run check`; decide hosting and add deploy
+- [x] Fill in real contact info (phone placeholder) and make the `<noscript>` fallback match the JS cards (consider generating it at build time)
 
 ## Phase 1: Engine polish
 - [ ] Decide: bring back ASCII borders on cards? (see DECISIONS.md)
@@ -43,4 +43,9 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 
 ### Session 2 (2026-10-02)
 - Done: user approved the feature-module plan; recorded in DECISIONS.md, ARCHITECTURE.md marked approved.
-- Next: GitHub Actions CI + hosting decision (needs user input on host).
+- Done: CI + deploy live. Merging to `main` rsyncs `dist/` to the netcup server (nginx container behind Traefik, `https://1000110.xyz`) as a restricted `deploy` user; see DECISIONS.md. Site renamed to 1000110.xyz.
+- Next: contact card done (see Session 3); then Phase 1.
+
+### Session 3 (2026-10-02)
+- Done: phone removed (user won't share it), email is mmateka89@gmail.com in JS card and noscript; repo renamed to l1pz/1000110.xyz; `.gitattributes` forces LF (CRLF checkouts broke Biome on Windows). Noscript is still hand-written: generating it at build time stays an open idea.
+- Next: Phase 1, "Decide: bring back ASCII borders on cards?" (needs a user decision).
