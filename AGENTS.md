@@ -11,7 +11,7 @@ Personal website of Máté Molnár: a retro ASCII terminal / cyberdeck made of t
 ## Every session
 1. Read `TASKS.md`; do ONE task (the first unchecked one unless told otherwise).
 2. Read `ARCHITECTURE.md` and `DECISIONS.md` before touching structure. Do not reopen decisions listed there; to change one, ask the user.
-3. Non-trivial change: state the plan (files, interfaces) first, then code.
+3. Non-trivial change: state the plan (files, interfaces) first, then code. Print every plan or proposal in the terminal before asking for approval (also write it to the docs). The user works from the CLI and does not open files to review.
 4. Work on a branch (`feat/<task>`), one commit per task.
 
 ## Definition of done
