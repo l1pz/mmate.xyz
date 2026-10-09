@@ -1,5 +1,7 @@
+import { escapeHtml } from "../../core/html";
+import { crumbs, endPrompt, manHeader, promptLine } from "../../core/shell";
 import type { Post } from "./frontmatter";
-import { escapeHtml, renderMarkdown } from "./markdown";
+import { renderMarkdown } from "./markdown";
 import { getPost, getPosts } from "./posts";
 
 export const BAR_WIDTH = 20;
@@ -27,8 +29,9 @@ export function statusLine(name: string, fraction: number): string {
     return `${name}  [${bar}] ${String(Math.round(fraction * 100)).padStart(3)}%`;
 }
 
-const crumbs = (last?: string) =>
-    `<nav class="crumbs"><a href="/">1000110.xyz</a> / ${last ? `<a href="#">blog</a> / ${escapeHtml(last)}` : "blog"}</nav>`;
+const HOME = { label: "1000110.xyz", href: "/" };
+const trail = (last?: string) =>
+    last ? [HOME, { label: "blog", href: "#" }, { label: last }] : [HOME, { label: "blog" }];
 
 /** The `/blog/` list, drawn like `ls -l`. */
 export function renderIndex(posts: Post[]): string {
@@ -39,8 +42,8 @@ export function renderIndex(posts: Post[]): string {
             `${p.tags.length ? ` <span class="dim">[${escapeHtml(p.tags.join(", "))}]</span>` : ""}</div>`,
     );
     return [
-        crumbs(),
-        '<p class="prompt"><span class="dim">$</span> ls -l ~/blog</p>',
+        crumbs(trail()),
+        promptLine("ls -l ~/blog"),
         `<p class="dim">total ${posts.length}</p>`,
         ...(rows.length ? rows : ['<p class="dim">(nothing here yet)</p>']),
     ].join("\n");
@@ -50,20 +53,20 @@ export function renderIndex(posts: Post[]): string {
 export function renderPost(post: Post): string {
     const tags = post.tags.length ? `<p class="dim">tags: ${escapeHtml(post.tags.join(", "))}</p>` : "";
     return [
-        crumbs(post.slug),
-        `<header class="man"><span>${escapeHtml(post.slug.toUpperCase())}(1)</span><span>blog</span><span>${post.date}</span></header>`,
-        `<p class="prompt"><span class="dim">$</span> cat posts/${escapeHtml(post.slug)}.md</p>`,
+        crumbs(trail(post.slug)),
+        manHeader(post.slug, "blog", post.date),
+        promptLine(`cat posts/${post.slug}.md`),
         `<h1 class="title">${escapeHtml(post.title)}</h1>`,
         tags,
         `<article>${renderMarkdown(post.body)}</article>`,
-        '<p class="prompt"><span class="dim">$</span> <span class="cursor"></span></p>',
+        endPrompt(),
     ].join("\n");
 }
 
 export function renderNotFound(slug: string): string {
     return [
-        crumbs(slug),
-        `<p class="prompt"><span class="dim">$</span> cat posts/${escapeHtml(slug)}.md</p>`,
+        crumbs(trail(slug)),
+        promptLine(`cat posts/${slug}.md`),
         `<p class="error">cat: posts/${escapeHtml(slug)}.md: no such file</p>`,
         '<p><a href="#">cd ~/blog</a></p>',
     ].join("\n");
@@ -71,7 +74,7 @@ export function renderNotFound(slug: string): string {
 
 /** Draws the page into `el` and wires up the hash routing, the status line and the vim-style keys. */
 export async function mount(el: Element): Promise<void> {
-    el.innerHTML = '<main id="content"></main><footer id="status"></footer>';
+    el.innerHTML = '<main id="content" class="page"></main><footer id="status"></footer>';
     const content = el.querySelector<HTMLElement>("#content");
     const status = el.querySelector<HTMLElement>("#status");
     if (!content || !status) return;

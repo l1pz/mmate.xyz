@@ -18,12 +18,14 @@ Pure logic, fully tested (`tests/card.test.ts`). The only DOM touch is `render()
 index.html, blog/index.html, experiments/**/index.html   pages (all listed in vite.config.js)
 src/ascii-art/                        ASCII art (.ascii), bundled at build time
 src/ascii.ts                            loads the bundled art
+src/core/html.ts                        escapeHtml (shared)
+src/core/shell.ts                       the shared page shell: crumbs, manHeader, promptLine, endPrompt (pure, return HTML)
 src/card.ts                             card engine
 src/borders.ts                          border styles (plain data; add a style = add an entry)
 src/cards.ts                            the home page cards (buildHomeCards, rounded border hardcoded; includes the blog card)
 plugins/noscript-cards.js               build/dev plugin: fills the <noscript> block of index.html from buildHomeCards
 src/index.ts                            home page: renders the cards with the rounded border (hardcoded)
-styles/                                 reset, theme (Gruvbox variables), card layout
+styles/                                 reset, theme (Gruvbox variables), shell (shared page chrome), card layout, blog prose
 public/fonts/                           self-hosted fonts (DejaVu Sans Mono + JGS pixel fonts), copied as-is to dist/fonts
 tests/                                  vitest: card engine, borders, home cards in every border style, production-build guard
 ```
@@ -55,3 +57,6 @@ Cards are for the home grid and widgets. Posts are read on a normal page styled 
 - `markdown.ts` (pure): Markdown subset to HTML. Headings `#`-`###` (marker kept, dimmed), paragraphs, `-`/`1.` lists, `>` quotes, fenced code drawn as a text box, `---`, inline `code`/`**bold**`/`*italic*`/`[link](url)`. All text is escaped first; only http(s), mailto, `/` and `#` links are made clickable.
 - `page.ts`: pure renderers (`renderIndex`, `renderPost`, `renderNotFound`, `statusLine`, `scrollFraction`, `parseRoute`) plus `mount(el)` for the DOM: hashchange, scroll, and keys `j/k/arrows` (scroll), `g/G` (top/bottom), `b/Esc` (back to the list); space and PageUp/PageDown scroll natively.
 - No-JS: the page only shows a "needs javascript" note. Rendering posts into `<noscript>` at build time is a possible follow-up.
+
+## Shell (see DESIGN.md)
+Every page shares one shell. `src/core/shell.ts` builds its parts as HTML strings (`crumbs`, `manHeader`, `promptLine`, `endPrompt`) and `styles/shell.css` styles them (`body.shell`, `.page` column, `.crumbs`, `.man`, `.prompt`, `.dim`, `.cursor`, the fixed `#status` line). New pages use these helpers instead of hand-writing chrome; page-specific styles stay in their own file (`blog.css`).

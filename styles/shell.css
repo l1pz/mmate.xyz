@@ -1,0 +1,88 @@
+/* The shell every page shares (DESIGN.md): crumbs, man header, prompt lines, cursor, status line. */
+body.shell {
+    display: block;
+    line-height: 1.6;
+    user-select: text;
+}
+
+/* A column of shell content. Cards do not live in here (they keep their own tight spacing). */
+.page {
+    width: min(72ch, 100%);
+    margin: 0 auto;
+    padding: 1.5em 1.5ch 6em;
+}
+
+.page p,
+.page pre,
+.page ul,
+.page ol,
+.page blockquote,
+.page hr {
+    margin: 0 0 1.4em;
+}
+
+.dim,
+.crumbs {
+    color: var(--gray);
+}
+
+.crumbs {
+    margin-bottom: 2em;
+}
+
+.prompt {
+    color: var(--green);
+}
+
+.error {
+    color: var(--red);
+}
+
+.man {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.4em;
+    padding-bottom: 0.4em;
+    border-bottom: 1px dashed var(--gray);
+    color: var(--gray);
+}
+
+.title {
+    margin-bottom: 0.4em;
+    color: var(--yellow);
+    font-size: inherit;
+}
+
+.cursor {
+    display: inline-block;
+    width: 1ch;
+    height: 1.1em;
+    background: var(--fg);
+    vertical-align: text-bottom;
+    animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cursor {
+        animation: none;
+    }
+}
+
+/* The fixed status line at the bottom. */
+#status {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0.5em 1.5ch;
+    background: var(--bg-soft);
+    color: var(--yellow);
+    white-space: pre;
+    overflow: hidden;
+}

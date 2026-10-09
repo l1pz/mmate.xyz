@@ -1,6 +1,4 @@
-/** Escapes text for HTML, attribute values included. */
-export const escapeHtml = (s: string) =>
-    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+import { escapeHtml } from "../../core/html";
 
 // Only these links become <a>; anything else (javascript:, data:, ...) stays plain text.
 const SAFE_URL = /^(https?:\/\/|mailto:|\/|#)[^*]*$/;
