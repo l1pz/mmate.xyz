@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { ascii } from "../src/ascii";
+import { borders } from "../src/borders";
 import Card from "../src/card";
 
 beforeAll(() => {
@@ -65,5 +66,54 @@ describe("Card", () => {
         expect(() => new Card(10, 10, "t", (c) => c.drawTextCentered("abc", { label: "x", href: "/" }))).toThrow(
             /not found/,
         );
+    });
+
+    describe("drawFooter", () => {
+        const rows = (card: Card) => card.toString().split("\n");
+
+        it("draws 4 binary lines ending one row above the bottom, wherever the content ends", () => {
+            const short = rows(new Card(41, 32, "t", (c) => c.drawFooter("abcdefghijklmnop")));
+            const long = rows(
+                new Card(41, 32, "t", (c) => {
+                    c.emptyLine(10);
+                    c.drawTextCentered("content");
+                    c.drawFooter("abcdefghijklmnop");
+                }),
+            );
+            for (const lines of [short, long]) {
+                expect(lines[25].trim()).toBe("");
+                expect(lines.slice(26, 30).every((l) => /^[01 ]+$/.test(l) && l.trim().length === 35)).toBe(true);
+                expect(lines[30].trim()).toBe("");
+            }
+            expect(short.slice(26, 30)).toEqual(long.slice(26, 30));
+        });
+
+        it("pads short messages so it is always 4 lines", () => {
+            const lines = rows(new Card(41, 32, "t", (c) => c.drawFooter("hi")));
+            expect(lines.slice(26, 30).every((l) => l.trim().length === 35)).toBe(true);
+            expect(lines[26].trim().startsWith("01101000 01101001 00100000")).toBe(true); // "hi "
+        });
+
+        it("throws when the message is too long", () => {
+            expect(() => new Card(41, 32, "t", (c) => c.drawFooter("x".repeat(17)))).toThrow(RangeError);
+        });
+
+        it("throws when content already uses the footer rows", () => {
+            expect(
+                () =>
+                    new Card(41, 32, "t", (c) => {
+                        c.emptyLine(24);
+                        c.drawTextCentered("too low");
+                        c.drawFooter("hi");
+                    }),
+            ).toThrow(/overlaps the footer/);
+        });
+
+        it("works under every border style", () => {
+            for (const style of Object.values(borders)) {
+                const lines = rows(new Card(41, 32, "t", (c) => c.drawFooter("hi"), style));
+                expect(lines[26]).toContain("01101000");
+            }
+        });
     });
 });

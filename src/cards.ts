@@ -22,8 +22,7 @@ export function buildHomeCards(border: BorderStyle | null = borders.rounded): Re
             card.drawTextCentered("computer enthusiast");
             card.emptyLine(1);
             card.drawTextCentered("recreational programmer");
-            card.emptyLine(2);
-            card.drawBinaryTextCentered("i'm proud of you");
+            card.drawFooter("i'm proud of you");
         }),
         projects: make("projects", (card) => {
             card.drawAsciiArtCentered("escher");
@@ -31,8 +30,7 @@ export function buildHomeCards(border: BorderStyle | null = borders.rounded): Re
             card.drawTextCentered("github", { href: "https://github.com/l1pz/" });
             card.emptyLine(1);
             card.drawTextCentered("experiments", { href: "/experiments/" });
-            card.emptyLine(4);
-            card.drawBinaryTextCentered("bmljZSBjYXRjaA==");
+            card.drawFooter("bmljZSBjYXRjaA==");
         }),
         contact: make("contact", (card) => {
             card.drawAsciiArtCentered("phone");
@@ -45,8 +43,7 @@ export function buildHomeCards(border: BorderStyle | null = borders.rounded): Re
             });
             card.emptyLine(1);
             card.drawTextCentered("feel free to message me");
-            card.emptyLine(1);
-            card.drawBinaryTextCentered("0680442044callme");
+            card.drawFooter("0680442044callme");
         }),
         art: make("l'art pour l'art", (card) => {
             card.emptyLine(2);

@@ -15,6 +15,11 @@ describe("home cards", () => {
                     expect(card.cols).toBe(CARD_WIDTH);
                     expect(card.rows).toBe(CARD_HEIGHT);
                 }
+                for (const id of ["aboutme", "projects", "contact"]) {
+                    // footer: 4 binary lines at rows 26-29
+                    const lines = cards[id].toString().split("\n");
+                    expect(lines.slice(26, 30).every((l) => /[01]{8}/.test(l))).toBe(true);
+                }
             }
         }
     });
