@@ -21,7 +21,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ## Phase 2: Blog
 - [x] Markdown loader + frontmatter (title, date, tags, slug)
 - [x] Blog card on home grid
-- [ ] TUI reading view with progress meter
+- [x] TUI reading view with progress meter (pager-style page, not a card; see DECISIONS.md)
 - [ ] RSS feed script
 
 ## Phase 3: Tools
@@ -76,3 +76,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ### Session 6 (2026-10-09)
 - Done: blog card (`src/features/blog/index.ts`, `buildBlogCard`): newest 5 posts, each row links to `/blog/#slug`; wired into `buildHomeCards` (so noscript follows), `index.html`, typewriter art, `drawFooter` binary footer, tests. Not yet eyeballed in `npm run dev`.
 - Next: Phase 2, "TUI reading view with progress meter" (the `/blog/` page; needs `page` on the feature object, a new HTML page in `vite.config.js`, and a plan shown in the terminal first).
+
+### Session 7 (2026-10-09)
+- Done: `/blog/` reader (branch `feat/blog-reader`): list as `ls -l`, post view with man-page header, boxed code, status line with progress meter, vim-style keys; `markdown.ts` + `page.ts` with tests. `markdown-demo.md` is a sample post to delete before real posts. Not yet eyeballed by the user.
+- Next: Phase 2, "RSS feed script". Possible follow-ups: build-time `<noscript>` posts, table-of-contents widget card.

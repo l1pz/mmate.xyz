@@ -44,6 +44,8 @@ export function buildBlogCard(posts: Post[], width: number, height: number, bord
 
 export default {
     id: "blog",
+    // Loaded on demand so the home page does not carry the Markdown renderer.
+    page: { path: "/blog/", mount: (el: Element) => import("./page").then((m) => m.mount(el)) },
     card: (width: number, height: number, border: BorderStyle | null = null) =>
         buildBlogCard(getPosts(), width, height, border),
 };
