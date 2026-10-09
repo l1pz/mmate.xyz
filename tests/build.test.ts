@@ -25,12 +25,12 @@ describe("production build", () => {
         const html = readFileSync("dist/index.html", "utf8");
         const noscript = html.slice(html.indexOf("<noscript>"), html.indexOf("</noscript>"));
         expect(noscript).not.toContain("noscript-cards"); // placeholder was replaced
-        expect(noscript.match(/<pre>/g)).toHaveLength(4);
+        expect(noscript.match(/<pre>/g)).toHaveLength(5);
 
         // The art card is random, so compare the fixed ones verbatim.
         initAscii();
         const cards = buildHomeCards();
-        for (const id of ["aboutme", "projects", "contact"]) {
+        for (const id of ["aboutme", "projects", "blog", "contact"]) {
             expect(noscript).toContain(cards[id].toHtml());
         }
         expect(noscript).toContain('<a href="mailto:mmateka89@gmail.com">');
