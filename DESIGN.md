@@ -79,3 +79,49 @@ Each step is its own commit and is reviewable on its own.
 ## Open questions (defaults in brackets)
 - [Keep the stack] Do the five stacked cards on a phone feel too long (about 2000px of scrolling)? The status line jumps between them. If not, a compact `ls`-style card index at the top could replace the long stack on phones.
 - [Keep centered] Should card text stay centered, or become left-aligned like the rest of the shell? Centered keeps the cyberdeck look; left-aligned would be more consistent.
+
+## 8. Consistency plan (PROPOSED 2026-10-10)
+Why: home, blog index and post each assembled the shell by hand, so they drifted (no man header or end prompt on the blog index, different status lines), and the experiments pages never got the shell at all. The fix is structural: a page cannot leave a part out, because it does not assemble the shell, it only hands over its content.
+
+### 8.1 The site map is data (`src/core/site.ts`)
+One list of pages: `id`, `path`, `name` (status window), `section`, `pattern`. Everything site-wide derives from it: the status line windows, the crumbs, the man header name and section. Adding a page = one entry plus its HTML file in `vite.config.js`.
+
+| id | path | window | pattern | content |
+|----|------|--------|---------|---------|
+| home | `/` | `1:home` | grid | `$ whoami`, `$ ls cards/`, the cards |
+| blog | `/blog/` | `2:blog` | listing, then prose | `$ ls -l ~/blog`; a post is `$ cat posts/x.md` |
+| experiments | `/experiments/` | `3:exp` | listing | `$ ls experiments/`, one row per experiment (replaces the lone WIP card) |
+| fluid dynamics | `/experiments/fluiddynamics/` | (child of exp) | tool | shell header, canvas inside |
+| later: tools, gallery, oracle | | next numbers | tool / listing / feed | |
+
+### 8.2 One page frame (`renderPage` in `src/core/shell.ts`)
+Every page, JS or `<noscript>`, is `renderPage({ page, command, body })`, which outputs in this fixed order: crumbs, man header, `$ command`, the page's body, end prompt. Page code only writes `body`. The status line is mounted by the same shared boot code on every page.
+
+### 8.3 One status line (`src/core/statusline.ts`)
+- Left: the site windows from the site map (`1:home 2:blog 3:exp`), the current page highlighted with `*`, each a link with a 44px tap target. This is the site navigation on phones.
+- Right: scroll progress `[████░░░░] 42%` on every page; on phones just `42%` so everything fits 40 columns. The clock goes away (parked as a living-card idea).
+- The home page's card windows are removed; cards are reached by `h/j/k/l`, arrows, tap, or scrolling.
+
+### 8.4 One key vocabulary
+- Everywhere: `1`-`9` jump to site window N, `g`/`G` top and bottom.
+- Prose and listing pages: `j`/`k` scroll, `b` or Esc goes up one level.
+- Grid pages (home): `h/j/k/l` move between cards, `Enter` opens, Esc clears.
+- Keys are only a bonus; every action also works by tap.
+
+### 8.5 Guards so it cannot drift again
+- A pure `assertShell(html)` test helper checks the parts and their order; every page's renderer is tested with it, and the `<noscript>` output too.
+- A test compares `vite.config.js` page inputs with the site map, so a new HTML page without a map entry fails `npm run check`.
+- The build test loads every built HTML file and checks `body.shell`, the status line mount point and the viewport meta.
+- `AGENTS.md` already tells new pages to use the shell; it will point at `renderPage` and the site map.
+
+### 8.6 Implementation order (one PR, one commit per step)
+1. `site.ts` + `renderPage` + `assertShell`, with tests.
+2. Shared status line (windows from the site map, progress on every page); delete the separate home status bar and blog status line code.
+3. Blog index, post and not-found go through `renderPage`.
+4. Home goes through `renderPage`; card windows removed; keys updated.
+5. Experiments index as a listing; fluid dynamics gets the shell header around its canvas.
+6. Guard tests, then fold this section into sections 3-6 and update `AGENTS.md`, `DECISIONS.md`.
+
+### 8.7 Open questions
+- Man header date: today's date at runtime (build date in `<noscript>`), or each page's own date (post date on posts)? Default: own date where the page has one, today otherwise.
+- The clock is dropped. Keep it as a fourth, optional status element on wide screens?
