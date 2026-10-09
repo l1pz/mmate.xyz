@@ -5,6 +5,27 @@ body.shell {
     user-select: text;
 }
 
+/* The home page: as wide as its card grid, header text lines up with the first card. */
+.home {
+    box-sizing: content-box;
+    width: calc(var(--cols) * 41ch + (var(--cols) - 1) * 2ch);
+    max-width: calc(100% - 16px);
+    margin: 0 auto;
+    padding: 1.5em 8px 2em;
+}
+
+.home p {
+    margin: 0 0 1.4em;
+}
+
+.home .card-container {
+    margin-bottom: 1.4em;
+}
+
+.name {
+    color: var(--yellow);
+}
+
 /* A column of shell content. Cards do not live in here (they keep their own tight spacing). */
 .page {
     width: min(72ch, 100%);
@@ -76,7 +97,7 @@ body.shell {
 
 /* The fixed status line at the bottom (tmux / vim style): where you are on the left, state on the right. */
 body.shell {
-    padding-bottom: 3em;
+    padding-bottom: calc(3em + env(safe-area-inset-bottom, 0px));
 }
 
 #status {
@@ -87,7 +108,7 @@ body.shell {
     display: flex;
     justify-content: space-between;
     gap: 2ch;
-    padding: 0.5em 1.5ch;
+    padding: 0.5em 1.5ch calc(0.5em + env(safe-area-inset-bottom, 0px));
     background: var(--bg-soft);
     color: var(--yellow);
     white-space: pre;
@@ -112,4 +133,53 @@ body.shell {
 
 #clock {
     color: var(--gray);
+}
+
+/* Window names: long on wide screens, short on phones so the list fits in 40 columns. */
+#status .win .short {
+    display: none;
+}
+
+@media (max-width: 499px) {
+    #status .win .long {
+        display: none;
+    }
+
+    #status .win .short {
+        display: inline;
+    }
+}
+
+@media (max-width: 599px) {
+    #clock {
+        display: none;
+    }
+}
+
+/* Touch screens: every tap target is at least 44px tall. */
+@media (pointer: coarse) {
+    #status {
+        padding-top: 0;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    #windows {
+        display: flex;
+    }
+
+    #status .win {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 0.6ch;
+    }
+
+    .crumbs a {
+        display: inline-block;
+        padding: 0.6em 0;
+    }
+
+    .row {
+        padding: 0.6em 0;
+    }
 }

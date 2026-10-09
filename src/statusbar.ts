@@ -1,8 +1,14 @@
 /** The home page status line, like a tmux bar: window list on the left, clock on the right. */
 
-const NAMES: Record<string, string> = { aboutme: "about" };
+// Window names: long on wide screens, short on phones so the whole list fits in 40 columns (CSS picks one).
+const NAMES: Record<string, { long: string; short: string }> = {
+    aboutme: { long: "about", short: "me" },
+    projects: { long: "projects", short: "proj" },
+    contact: { long: "contact", short: "mail" },
+};
 
-export const windowName = (id: string) => NAMES[id] ?? id;
+export const windowName = (id: string) => NAMES[id]?.long ?? id;
+const shortName = (id: string) => NAMES[id]?.short ?? id;
 
 const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -11,8 +17,11 @@ export function windowsHtml(ids: string[], active: number | null): string {
     return ids
         .map((id, i) => {
             const isActive = i === active;
-            const label = escapeHtml(`${i + 1}:${windowName(id)}${isActive ? "*" : ""}`);
-            return `<a class="win${isActive ? " active" : ""}" href="#${escapeHtml(id)}" data-index="${i}">${label}</a>`;
+            const long = escapeHtml(windowName(id));
+            const short = escapeHtml(shortName(id));
+            const name = long === short ? long : `<span class="long">${long}</span><span class="short">${short}</span>`;
+            const star = isActive ? "*" : "";
+            return `<a class="win${isActive ? " active" : ""}" href="#${escapeHtml(id)}" data-index="${i}">${i + 1}:${name}${star}</a>`;
         })
         .join(" ");
 }

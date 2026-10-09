@@ -6,6 +6,7 @@ Personal website of Máté Molnár: a retro ASCII terminal / cyberdeck made of t
 - **Look**: retro TUI. Monospace, ASCII art, Gruvbox Dark. Colors come from the CSS variables in `styles/theme.css`, never raw hex.
 - **Cards**: 41 columns x 32 rows (`src/card.ts`). Responsive grid of 1-4 columns. Never break the character grid.
 - **Zero bloat**: vanilla TypeScript + Vite only. No UI frameworks, no CSS frameworks. Ask before adding any runtime dependency.
+- **Design system**: every page uses the shared shell (`src/core/shell.ts`, `styles/shell.css`) and follows `DESIGN.md`, phone first. Check UI changes at 360px and 390px wide, not only on desktop.
 - **Keep the charm**: hidden binary messages, `<noscript>` fallback, small easter eggs.
 
 ## Every session

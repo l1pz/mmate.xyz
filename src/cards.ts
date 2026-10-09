@@ -12,7 +12,7 @@ export const CARD_HEIGHT = 32;
 export function buildHomeCards(border: BorderStyle | null = borders.rounded): Record<string, Card> {
     const make = (title: string, draw: (card: Card) => void) => new Card(CARD_WIDTH, CARD_HEIGHT, title, draw, border);
     return {
-        aboutme: make("about me", (card) => {
+        aboutme: make("$ cat about", (card) => {
             card.emptyLine(2);
             card.drawAsciiArtCentered("portrait", "aqua");
             card.emptyLine(2);
@@ -25,7 +25,7 @@ export function buildHomeCards(border: BorderStyle | null = borders.rounded): Re
             card.drawTextCentered("recreational programmer");
             card.drawFooter("i'm proud of you");
         }),
-        projects: make("projects", (card) => {
+        projects: make("$ ls projects", (card) => {
             card.drawAsciiArtCentered("escher", "purple");
             card.emptyLine(3);
             card.drawTextCentered("github", { href: "https://github.com/l1pz/" });
@@ -34,7 +34,7 @@ export function buildHomeCards(border: BorderStyle | null = borders.rounded): Re
             card.drawFooter("bmljZSBjYXRjaA==");
         }),
         blog: blog.card(CARD_WIDTH, CARD_HEIGHT, border),
-        contact: make("contact", (card) => {
+        contact: make("$ cat contact", (card) => {
             card.drawAsciiArtCentered("phone", "green");
             card.emptyLine(1);
             card.drawTextCentered("phone: +36 xx xxx xxxx");
@@ -47,7 +47,7 @@ export function buildHomeCards(border: BorderStyle | null = borders.rounded): Re
             card.drawTextCentered("feel free to message me");
             card.drawFooter("0680442044callme");
         }),
-        art: make("l'art pour l'art", (card) => {
+        art: make("$ echo l'art pour l'art", (card) => {
             card.emptyLine(2);
             card.drawAsciiArtCentered("art");
         }),

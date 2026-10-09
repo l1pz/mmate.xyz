@@ -35,11 +35,12 @@ const trail = (last?: string) =>
 
 /** The `/blog/` list, drawn like `ls -l`. */
 export function renderIndex(posts: Post[]): string {
+    // Each row is one link, so the whole line is a tap target.
     const rows = posts.map(
         (p) =>
-            `<div class="row"><span class="dim">-rw-r--r--</span> ${String(wordCount(p.body)).padStart(5)}w ` +
-            `<span class="dim">${p.date}</span> <a href="#${encodeURIComponent(p.slug)}">${escapeHtml(p.title)}</a>` +
-            `${p.tags.length ? ` <span class="dim">[${escapeHtml(p.tags.join(", "))}]</span>` : ""}</div>`,
+            `<a class="row" href="#${encodeURIComponent(p.slug)}"><span class="dim perm">-rw-r--r--</span> ${String(wordCount(p.body)).padStart(5)}w ` +
+            `<span class="dim">${p.date}</span> ${escapeHtml(p.title)}` +
+            `${p.tags.length ? ` <span class="dim">[${escapeHtml(p.tags.join(", "))}]</span>` : ""}</a>`,
     );
     return [
         crumbs(trail()),

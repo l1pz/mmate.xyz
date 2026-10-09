@@ -5,53 +5,38 @@
     align-items: center;
 }
 
-#card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+/* Cards keep tight spacing so the art holds its shape, even inside a page with roomier text. */
+.card pre {
+    line-height: 1em;
+}
+
+/* Columns are exactly one card wide, so the grid is as wide as its cards (and the page header can match it). */
+:root {
+    --cols: 1;
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 41ch);
+    gap: 1em 2ch;
+    justify-content: center;
+}
+
+@media only screen and (min-width: 750px) {
+    :root {
+        --cols: 2;
+    }
+}
+
+@media only screen and (min-width: 1100px) {
+    :root {
+        --cols: 3;
+    }
 }
 
 @media only screen and (min-width: 1500px) {
-    /* grid */
-    .card-container {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1em 2ch;
-    }
-
-    .card-container > * {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    body {
-        height: 100vh;
-    }
-}
-
-@media only screen and (min-width: 1100px) and (max-width: 1499px) {
-    .card-container {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1em 2ch;
-    }
-}
-
-@media only screen and (min-width: 750px) and (max-width: 1099px) {
-    .card-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(2, 1fr);
-        gap: 1em 2ch;
-    }
-}
-
-@media only screen and (max-width: 749px) {
-    .card-container {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1em 2ch;
+    :root {
+        --cols: 4;
     }
 }
 

@@ -39,6 +39,7 @@ export default class Card {
         this.#canvas = Array.from({ length: rows }, () => new Array<string>(cols).fill(" "));
         this.#styles = Array.from({ length: rows }, () => new Array<CardStyle | null>(cols).fill(null));
         this.#drawText(this.#title, this.#centerCol(this.#title), 1, "title");
+        if (title.startsWith("$ ")) this.#styles[1][this.#centerCol(title)] = "dim"; // a command title: dim prompt
         draw(this);
         if (border) this.#drawFrame(border);
     }

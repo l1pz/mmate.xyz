@@ -6,15 +6,18 @@ describe("windowsHtml", () => {
 
     it("numbers the windows from 1 and links each to its card", () => {
         const html = windowsHtml(ids, null);
-        expect(html).toContain('href="#aboutme" data-index="0">1:about</a>');
-        expect(html).toContain(">2:projects</a>");
+        expect(html).toContain(
+            'href="#aboutme" data-index="0">1:<span class="long">about</span><span class="short">me</span></a>',
+        );
+        expect(html).toContain('>2:<span class="long">projects</span><span class="short">proj</span></a>');
         expect(html).toContain(">3:blog</a>");
         expect(html).not.toContain("active");
     });
 
     it("marks the active window with a star and a class", () => {
         const html = windowsHtml(ids, 1);
-        expect(html).toContain('class="win active" href="#projects" data-index="1">2:projects*</a>');
+        expect(html).toContain('class="win active" href="#projects" data-index="1">2:');
+        expect(html).toContain('<span class="short">proj</span>*</a>');
         expect(html.match(/active/g)).toHaveLength(1);
     });
 });

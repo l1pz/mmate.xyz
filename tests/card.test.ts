@@ -97,6 +97,12 @@ describe("Card", () => {
             expect(html).toContain('<a href="/"><span class="c-green">go home</span></a>');
         });
 
+        it("dims the $ of a command title", () => {
+            const html = new Card(20, 6, "$ ls", () => {}).toHtml();
+            expect(html).toContain('<span class="c-dim">$</span>');
+            expect(html).toContain('<span class="c-title"> ls</span>');
+        });
+
         it("makes the title a link", () => {
             const html = new Card(20, 6, "blog", (c) => c.linkTitle("/blog/")).toHtml();
             expect(html).toContain('<a href="/blog/"><span class="c-title">blog</span></a>');

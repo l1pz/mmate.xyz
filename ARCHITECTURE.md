@@ -24,7 +24,8 @@ src/core/shell.ts                       the shared page shell: crumbs, manHeader
 src/card.ts                             card engine
 src/borders.ts                          border styles (plain data; add a style = add an entry)
 src/cards.ts                            the home page cards (buildHomeCards, rounded border hardcoded; includes the blog card)
-plugins/noscript-cards.js               build/dev plugin: fills the <noscript> block of index.html from buildHomeCards
+src/home.ts                             home page shell around the cards (crumbs, man header, whoami, end prompt)
+plugins/noscript-cards.js               build/dev plugin: fills the <noscript> block of index.html with the home shell and buildHomeCards
 src/index.ts                            home page: renders the cards with the rounded border (hardcoded)
 src/keynav.ts                           home page keyboard navigation (pure: keyAction, moveFocus)
 src/statusbar.ts                        home page status line (window list + clock)
@@ -34,7 +35,7 @@ tests/                                  vitest: card engine, borders, home cards
 ```
 
 ## No-JS version
-`index.html` has `<!-- noscript-cards -->` inside `<noscript>`. `plugins/noscript-cards.js` (listed in `vite.config.js`) replaces it with `card.toHtml()` of every card from `buildHomeCards()`, loaded through Vite so `import.meta.glob` works. Never edit noscript cards by hand: change `src/cards.ts` and both versions follow. Build time values (the age line, the random art piece) are fixed per build. `tests/build.test.ts` checks the generated output.
+`index.html` has `<!-- noscript-cards -->` inside `<noscript>`. `plugins/noscript-cards.js` (listed in `vite.config.js`) replaces it with the home shell (`renderHomeHead`/`renderHomeEnd` from `src/home.ts`) around `card.toHtml()` of every card from `buildHomeCards()`, loaded through Vite so `import.meta.glob` works. Never edit noscript cards by hand: change `src/cards.ts` and both versions follow. Build time values (the age line, the random art piece) are fixed per build. `tests/build.test.ts` checks the generated output.
 
 ## Layout
 CSS grid, 1 column (<750px), 2 (750-1099), 3 (1100-1499), 4 (>=1500). All cards are the same size.
@@ -67,3 +68,7 @@ Every page shares one shell. `src/core/shell.ts` builds its parts as HTML string
 ### Home page chrome (`src/index.ts`)
 - Status line (`#status`, fixed at the bottom, `src/statusbar.ts`): tmux-style window list `1:about 2:projects 3:blog ...` (one window per card; the focused one is yellow with a `*`; clicking one focuses it) and a `HH:MM` clock.
 - Keyboard (`src/keynav.ts`): `h/j/k/l` move a highlight between cards by real position (works with 1-4 columns), arrow keys do the same once a card is focused (before that they scroll as usual), `1`-`5` jump, `Enter` follows the focused card's first link, `Esc` clears. The focused card gets the `focused` class, which turns its border yellow. Nothing is focused until the first key, so mouse and touch users see no change.
+
+### Phone rules in code
+- `--font-size` in `theme.css` is `min(14px, (100vw - 16px) / 24.68)`, so 41 columns always fit a phone; the card grid is `repeat(var(--cols), 41ch)` with `--cols` 1/2/3/4 at 750/1100/1500px, and `.home` is exactly as wide as the grid.
+- Status line: `viewport-fit=cover` plus `env(safe-area-inset-bottom)` padding; window names have a `long` and a `short` span (CSS shows `short` under 500px); the clock hides under 600px; on touch screens (`pointer: coarse`) windows, crumbs and blog rows are at least 44px tall.

@@ -1,5 +1,6 @@
 import { initAscii } from "./ascii";
 import { buildHomeCards } from "./cards";
+import { renderHomeEnd, renderHomeHead } from "./home";
 import { keyAction, moveFocus } from "./keynav";
 import { mountStatusBar } from "./statusbar";
 
@@ -7,6 +8,10 @@ document.addEventListener("DOMContentLoaded", main);
 
 function main() {
     initAscii();
+    const head = document.querySelector("#home-head");
+    if (head) head.innerHTML = renderHomeHead(new Date());
+    const end = document.querySelector("#home-end");
+    if (end) end.innerHTML = renderHomeEnd();
     const cards = buildHomeCards();
     const ids = Object.keys(cards);
     const elements: HTMLElement[] = [];

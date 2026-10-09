@@ -16,7 +16,7 @@ export function buildBlogCard(posts: Post[], width: number, height: number, bord
     return new Card(
         width,
         height,
-        "blog",
+        "$ ls ~/blog",
         (card) => {
             card.emptyLine(1);
             card.drawAsciiArtCentered("typewriter", "yellow");
