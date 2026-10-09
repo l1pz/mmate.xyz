@@ -10,7 +10,7 @@ describe("home cards", () => {
             ascii.art = piece;
             for (const style of Object.values(borders)) {
                 const cards = buildHomeCards(style);
-                expect(Object.keys(cards)).toEqual(["aboutme", "projects", "contact", "art"]);
+                expect(Object.keys(cards)).toEqual(["aboutme", "projects", "blog", "contact", "art"]);
                 for (const card of Object.values(cards)) {
                     expect(card.cols).toBe(CARD_WIDTH);
                     expect(card.rows).toBe(CARD_HEIGHT);

@@ -20,7 +20,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 
 ## Phase 2: Blog
 - [x] Markdown loader + frontmatter (title, date, tags, slug)
-- [ ] Blog card on home grid
+- [x] Blog card on home grid
 - [ ] TUI reading view with progress meter
 - [ ] RSS feed script
 
@@ -72,3 +72,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ### Session 6b (2026-10-09)
 - Done: `Card.drawFooter` (branch `feat/card-footer`); aboutme/projects/contact use it with byte-identical output. `experiments.ts` still uses `drawBinaryTextCentered` (28-char message, 7 lines): not a standard footer, left alone.
 - Next: after this merges, rebase `feat/blog-card` onto `main` and switch the blog card to `drawFooter`; the `art` card has no footer yet.
+
+### Session 6 (2026-10-09)
+- Done: blog card (`src/features/blog/index.ts`, `buildBlogCard`): newest 5 posts, each row links to `/blog/#slug`; wired into `buildHomeCards` (so noscript follows), `index.html`, tests. Not yet eyeballed in `npm run dev`.
+- Next: Phase 2, "TUI reading view with progress meter" (the `/blog/` page; needs `page` on the feature object, a new HTML page in `vite.config.js`, and a plan shown in the terminal first).

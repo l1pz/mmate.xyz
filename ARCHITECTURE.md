@@ -20,7 +20,7 @@ src/ascii-art/                        ASCII art (.ascii), bundled at build time
 src/ascii.ts                            loads the bundled art
 src/card.ts                             card engine
 src/borders.ts                          border styles (plain data; add a style = add an entry)
-src/cards.ts                            the home page cards (buildHomeCards, rounded border hardcoded)
+src/cards.ts                            the home page cards (buildHomeCards, rounded border hardcoded; includes the blog card)
 plugins/noscript-cards.js               build/dev plugin: fills the <noscript> block of index.html from buildHomeCards
 src/index.ts                            home page: renders the cards with the rounded border (hardcoded)
 styles/                                 reset, theme (Gruvbox variables), card layout
@@ -34,7 +34,7 @@ tests/                                  vitest: card engine, borders, home cards
 ## Layout
 CSS grid, 1 column (<750px), 2 (750-1099), 3 (1100-1499), 4 (>=1500). All cards are the same size.
 
-## Feature modules (APPROVED 2026-10-02; only `blog` loader exists so far)
+## Feature modules (APPROVED 2026-10-02; only `blog` exists so far: loader and home card)
 Each feature (blog, tools, gallery, oracle) is a folder `src/features/<name>/` exporting one object:
 ```ts
 export default {
@@ -46,4 +46,5 @@ export default {
 `src/index.ts` just imports the list of features and renders their cards. Features never import each other; shared code goes in `src/core/`. This keeps each AI session inside one folder.
 
 ### Blog loader (`src/features/blog/`)
-`frontmatter.ts` (pure parser/validator: `parseFrontmatter`, `parsePost`), `posts.ts` (`loadPosts`, `getPosts()` newest first, `getPost(slug)`), `posts/*.md` (title, date `YYYY-MM-DD`, optional `tags: [a, b]`, optional `slug`, defaulting to the filename). Bad frontmatter or a duplicate slug throws at load time. No card or page yet.
+`frontmatter.ts` (pure parser/validator: `parseFrontmatter`, `parsePost`), `posts.ts` (`loadPosts`, `getPosts()` newest first, `getPost(slug)`), `posts/*.md` (title, date `YYYY-MM-DD`, optional `tags: [a, b]`, optional `slug`, defaulting to the filename). Bad frontmatter or a duplicate slug throws at load time. 
+`index.ts` is the feature object: `card()` builds the home tile (`buildBlogCard`: newest 5 posts, one row each, titles truncated, rows link to `/blog/#slug`, "no posts yet" when empty). No reading page yet. `buildHomeCards` calls `blog.card()` directly; `src/index.ts` does not iterate a features list until a second feature exists.

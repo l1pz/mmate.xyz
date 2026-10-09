@@ -1,0 +1,32 @@
+import { describe, expect, it } from "vitest";
+import { borders } from "../src/borders";
+import { buildBlogCard } from "../src/features/blog";
+import type { Post } from "../src/features/blog/frontmatter";
+
+const post = (slug: string, date: string, title = slug): Post => ({ slug, date, title, tags: [], body: "" });
+
+describe("blog card", () => {
+    it("lists posts in the given order with links to the reading view", () => {
+        const html = buildBlogCard([post("b", "2026-02-01"), post("a", "2026-01-01")], 41, 32).toHtml();
+        expect(html).toContain('<a href="/blog/#b">2026-02-01  b</a>');
+        expect(html.indexOf("#b")).toBeLessThan(html.indexOf("#a"));
+    });
+
+    it("shows at most 5 posts", () => {
+        const posts = Array.from({ length: 8 }, (_, i) => post(`p${i}`, "2026-01-01"));
+        expect(buildBlogCard(posts, 41, 32).toHtml().match(/<a /g)).toHaveLength(5);
+    });
+
+    it("truncates long titles so they fit inside every border", () => {
+        const long = post("long", "2026-01-01", "x".repeat(80));
+        for (const style of [null, ...Object.values(borders)]) {
+            const card = buildBlogCard([long], 41, 32, style);
+            expect(card.toString()).toContain("…");
+            expect(card.rows).toBe(32);
+        }
+    });
+
+    it("shows a message when there are no posts", () => {
+        expect(buildBlogCard([], 41, 32).toString()).toContain("no posts yet");
+    });
+});

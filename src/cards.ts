@@ -1,5 +1,6 @@
 import { type BorderStyle, borders } from "./borders";
 import Card from "./card";
+import blog from "./features/blog";
 
 export const CARD_WIDTH = 41;
 export const CARD_HEIGHT = 32;
@@ -32,6 +33,7 @@ export function buildHomeCards(border: BorderStyle | null = borders.rounded): Re
             card.drawTextCentered("experiments", { href: "/experiments/" });
             card.drawFooter("bmljZSBjYXRjaA==");
         }),
+        blog: blog.card(CARD_WIDTH, CARD_HEIGHT, border),
         contact: make("contact", (card) => {
             card.drawAsciiArtCentered("phone");
             card.emptyLine(1);
