@@ -15,6 +15,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ## Phase 1: Engine polish
 - [x] Border styles (none, retro, ascii, single, double, rounded); rounded is hardcoded, toggle removed
 - [x] Pick a font with full box-drawing coverage (DejaVu Sans Mono) and fix the `/fonts/stylesheet.css` 404 (fonts moved to `public/fonts/`)
+- [x] Card footer system: `drawFooter` anchors the 4-line binary footer at the bottom; home cards use it
 - [x] JGS font: tried as the only font and rejected (hard to read); no toggle wanted, DejaVu Sans Mono stays
 
 ## Phase 2: Blog
@@ -67,3 +68,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ### Session 5 (2026-10-02)
 - Done: blog loader in `src/features/blog/` (`frontmatter.ts` hand-written parser, `posts.ts` bundles `posts/*.md` via glob, `getPosts()` newest first, `getPost(slug)`); sample post and tests. `npm run check` passes.
 - Next: Phase 2, "Blog card on home grid" (needs the feature module `card()` export and a plan shown in the terminal first).
+
+### Session 6b (2026-10-09)
+- Done: `Card.drawFooter` (branch `feat/card-footer`); aboutme/projects/contact use it with byte-identical output. `experiments.ts` still uses `drawBinaryTextCentered` (28-char message, 7 lines): not a standard footer, left alone.
+- Next: after this merges, rebase `feat/blog-card` onto `main` and switch the blog card to `drawFooter`; the `art` card has no footer yet.

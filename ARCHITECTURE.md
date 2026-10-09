@@ -8,6 +8,7 @@ Pure logic, fully tested (`tests/card.test.ts`). The only DOM touch is `render()
 - `new Card(cols, rows, title, draw)`: title on row 1, drawing starts at row 3.
 - `drawTextCentered(text, link?)`, `drawAsciiArtCentered(name)`, `drawBinaryTextCentered(text)`, `emptyLine(n)`: each draws at the current row and moves down.
 - `link = { href, label? }`: `label` is the part of the text that becomes the link.
+- `drawFooter(text)`: the hidden binary message, always the same 4 lines ending one blank row above the bottom row (rows 26-29 on a 32 row card), whatever the content above. Text is padded with spaces to 16 characters; longer text or content already in those rows throws `RangeError`. Use it for every card footer instead of counting `emptyLine`s.
 - Drawing outside the grid throws `RangeError` (so overflow is a loud bug, not silent corruption). Columns are clipped.
 - `toString()` plain text, `toHtml()` escaped HTML with `<a>` tags, `render(el)` mounts a `<pre>`.
 - Optional 5th constructor argument `border` (a `BorderStyle` from `src/borders.ts`, or null/omitted for none). The frame is drawn after the content on rows 0, 2 and the last row plus the first/last column; if content already uses one of those cells it throws `RangeError`. Content area is therefore rows 3 to rows-2, cols 1 to cols-2 when a border is on.

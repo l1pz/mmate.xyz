@@ -16,6 +16,9 @@ interface PlacedLink {
 
 const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+/** Lines in the binary footer block (see `drawFooter`). */
+export const FOOTER_LINES = 4;
+
 /** A fixed-size grid of characters, like a text-mode terminal screen. */
 export default class Card {
     readonly cols: number;
@@ -93,6 +96,28 @@ export default class Card {
         for (let i = 0; i < bytes.length; i += perLine) {
             this.drawTextCentered(bytes.slice(i, i + perLine).join(" "));
         }
+    }
+
+    /**
+     * Hidden binary message in a fixed spot: 4 lines ending one blank row above the bottom row,
+     * so every card has its footer at the same place without counting `emptyLine`s.
+     * The text is padded with spaces to fill all 4 lines. Throws `RangeError` if it is too long
+     * or the content already uses the footer rows.
+     */
+    drawFooter(text: string): void {
+        const perLine = Math.floor(this.cols / 9);
+        const max = perLine * FOOTER_LINES;
+        if (text.length > max) {
+            throw new RangeError(`Card "${this.#title}": footer has ${text.length} characters, the maximum is ${max}`);
+        }
+        const first = this.rows - 2 - FOOTER_LINES;
+        for (let row = first; row < first + FOOTER_LINES; row++) {
+            if (this.#canvas[row].some((c) => c !== " ")) {
+                throw new RangeError(`Card "${this.#title}": content overlaps the footer at row ${row}`);
+            }
+        }
+        this.#currentRow = first;
+        this.drawBinaryTextCentered(text.padEnd(max));
     }
 
     render(parent: Element): void {
