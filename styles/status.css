@@ -1,0 +1,45 @@
+/* The fixed status line at the bottom of the home page and the blog (tmux / vim style). */
+body {
+    padding-bottom: 3em;
+}
+
+#status {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 2ch;
+    padding: 0.5em 1.5ch;
+    background: var(--bg-soft);
+    color: var(--yellow);
+    white-space: pre;
+    overflow: hidden;
+}
+
+#status .win:link,
+#status .win:visited {
+    color: var(--fg);
+    text-decoration: none;
+}
+
+#status .win.active {
+    background: var(--yellow);
+    color: var(--bg);
+}
+
+#clock {
+    color: var(--gray);
+}
+
+@media (max-width: 599px) {
+    #clock {
+        display: none;
+    }
+}
+
+/* Without JavaScript the bar stays empty, so do not show it. */
+#status:empty {
+    display: none;
+}
