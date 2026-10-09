@@ -1,6 +1,6 @@
 # Design system: 1000110.xyz
 
-STATUS: PROPOSED (2026-10-10). Not approved yet; nothing here is implemented.
+STATUS: APPROVED 2026-10-10 (direction and implementation order). Open questions below default to the first option until the user has seen the result on a phone.
 
 Every page is a terminal session. Pages share one shell (the frame) and serve their own content inside it. Phones come first: most visitors arrive on one.
 
@@ -74,6 +74,6 @@ The short introduction moves from the about card into the `whoami` block; the ab
 5. Record the rules in `AGENTS.md` ("new pages use the shell in DESIGN.md") and add decisions to `DECISIONS.md`.
 Each step is its own commit and is reviewable on its own.
 
-## Open questions
-- Do the five stacked cards on a phone feel too long (about 2000px of scrolling)? The status line jumps between them. If not, a compact `ls`-style card index at the top could replace the long stack on phones.
-- Should card text stay centered, or become left-aligned like the rest of the shell? Centered keeps the cyberdeck look; left-aligned would be more consistent.
+## Open questions (defaults in brackets)
+- [Keep the stack] Do the five stacked cards on a phone feel too long (about 2000px of scrolling)? The status line jumps between them. If not, a compact `ls`-style card index at the top could replace the long stack on phones.
+- [Keep centered] Should card text stay centered, or become left-aligned like the rest of the shell? Centered keeps the cyberdeck look; left-aligned would be more consistent.
