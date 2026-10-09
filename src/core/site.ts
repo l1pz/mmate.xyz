@@ -17,6 +17,8 @@ export interface SitePage {
     name: string;
     section: string;
     pattern: Pattern;
+    /** A short remark shown next to the page in listings (e.g. "work in progress"). */
+    note?: string;
     /** Id of the page this one lives under (it gets no window; the parent's window stays current). */
     parent?: string;
 }
@@ -39,6 +41,7 @@ export const pages: SitePage[] = [
         name: "fluiddynamics",
         section: "experiments",
         pattern: "tool",
+        note: "work in progress",
         parent: "experiments",
     },
 ];

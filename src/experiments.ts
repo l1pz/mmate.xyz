@@ -1,16 +1,13 @@
-import { initAscii } from "./ascii";
-import Card from "./card";
+import { mountPage } from "./core/boot";
+import { experimentRows } from "./experiments-page";
 
-document.addEventListener("DOMContentLoaded", main);
-function main() {
-    initAscii();
-    const width = 41;
-    const height = 32;
-    const cardWIP = new Card(width, height, "work in progress", (card) => {
-        card.emptyLine(2);
-        card.drawAsciiArtCentered("wip");
-        card.emptyLine(3);
-        card.drawBinaryTextCentered("i promise i will finish this");
-    });
-    cardWIP.render(document.querySelector("#wip")!);
-}
+document.addEventListener("DOMContentLoaded", () => {
+    const root = document.querySelector("#experiments");
+    if (root) {
+        mountPage(root, "experiments", {
+            command: "ls experiments/",
+            body: experimentRows(),
+            secret: "i promise i will finish this",
+        });
+    }
+});

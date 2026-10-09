@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Post } from "../src/features/blog/frontmatter";
-import { parseRoute, renderIndex, renderNotFound, renderPost, wordCount } from "../src/features/blog/page";
+import { parseRoute, renderIndex, renderNotFound, renderPost } from "../src/features/blog/page";
+import { wordCount } from "../src/features/blog/rows";
 import { assertShell } from "./helpers/shell";
 
 const TODAY = "2026-10-10";

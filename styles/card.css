@@ -10,36 +10,6 @@
     line-height: 1em;
 }
 
-/* Columns are exactly one card wide, so the grid is as wide as its cards (and the page header can match it). */
-:root {
-    --cols: 1;
-}
-
-.card-container {
-    display: grid;
-    grid-template-columns: repeat(var(--cols), 41ch);
-    gap: 1em 2ch;
-    justify-content: center;
-}
-
-@media only screen and (min-width: 750px) {
-    :root {
-        --cols: 2;
-    }
-}
-
-@media only screen and (min-width: 1100px) {
-    :root {
-        --cols: 3;
-    }
-}
-
-@media only screen and (min-width: 1500px) {
-    :root {
-        --cols: 4;
-    }
-}
-
 /* Colors for runs of card text (see CardStyle in src/card.ts). Theme variables only. */
 .c-title {
     color: var(--yellow);

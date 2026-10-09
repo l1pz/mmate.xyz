@@ -1,5 +1,6 @@
 import { bindKeys } from "./keys";
-import type { SitePage } from "./site";
+import { isoDate, renderPage } from "./shell";
+import { getPage, type SitePage } from "./site";
 import { mountStatusLine } from "./statusline";
 
 /**
@@ -16,4 +17,18 @@ export function bootPage(page: SitePage, opts: { up?: () => void } = {}): { upda
     const status = mountStatusLine(footer, page);
     bindKeys(page, opts.up);
     return status;
+}
+
+/**
+ * For pages whose whole content is one block (experiments, tools): draws the page frame around `body` into `el`
+ * and boots the page. `body` is already HTML.
+ */
+export function mountPage(
+    el: Element,
+    pageId: string,
+    content: { command: string; body: string; secret?: string },
+): { update: () => void } {
+    const page = getPage(pageId);
+    el.innerHTML = renderPage({ page, date: isoDate(new Date()), ...content });
+    return bootPage(page);
 }

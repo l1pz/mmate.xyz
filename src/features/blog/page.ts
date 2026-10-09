@@ -5,6 +5,7 @@ import { crumbTrail, getPage } from "../../core/site";
 import type { Post } from "./frontmatter";
 import { renderMarkdown } from "./markdown";
 import { getPost, getPosts } from "./posts";
+import { postRows } from "./rows";
 
 export type Route = { view: "index" } | { view: "post"; slug: string };
 
@@ -14,29 +15,17 @@ export function parseRoute(hash: string): Route {
     return slug === "" ? { view: "index" } : { view: "post", slug };
 }
 
-export const wordCount = (text: string) => text.split(/\s+/).filter(Boolean).length;
-
 const blog = () => getPage("blog");
 /** Crumbs for a page inside the blog: the "blog" crumb goes back to the list (an in-page hash change). */
 const trail = (slug: string) => crumbTrail(blog(), slug, "#");
 
 /** The `/blog/` list, drawn like `ls -l`. `today` is the man header date. */
 export function renderIndex(posts: Post[], today: string): string {
-    // Each row is one link, so the whole line is a tap target.
-    const rows = posts.map(
-        (p) =>
-            `<a class="row" href="#${encodeURIComponent(p.slug)}"><span class="dim perm">-rw-r--r--</span> ${String(wordCount(p.body)).padStart(5)}w ` +
-            `<span class="dim">${p.date}</span> ${escapeHtml(p.title)}` +
-            `${p.tags.length ? ` <span class="dim">[${escapeHtml(p.tags.join(", "))}]</span>` : ""}</a>`,
-    );
     return renderPage({
         page: blog(),
         command: "ls -l ~/blog",
         date: today,
-        body: [
-            `<p class="dim">total ${posts.length}</p>`,
-            ...(rows.length ? rows : ['<p class="dim">(nothing here yet)</p>']),
-        ].join("\n"),
+        body: `<p class="dim">total ${posts.length}</p>\n${postRows(posts)}`,
         secret: "keep writing",
     });
 }

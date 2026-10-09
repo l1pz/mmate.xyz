@@ -3,15 +3,22 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>fluiddynamics - 1000110.xyz</title>
     <link rel="stylesheet" href="/styles/main.css">
     <link rel="stylesheet" href="/styles/experiment.css">
     <script type="module" src="src/main.js"></script>
-    <title>Fluid Dynamics</title>
 </head>
 
-<body>
-    <canvas></canvas>
+<body class="shell">
+    <main id="experiment" class="page"></main>
+    <footer id="status"></footer>
+    <noscript>
+        <main class="page">
+            <p>this experiment needs javascript.</p>
+            <p><a href="/experiments/">back to experiments</a></p>
+        </main>
+    </noscript>
 </body>
 
 </html>

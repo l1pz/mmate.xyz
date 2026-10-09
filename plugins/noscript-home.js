@@ -1,28 +1,24 @@
 import { createServer } from "vite";
 
-const PLACEHOLDER = "<!-- noscript-cards -->";
+const PLACEHOLDER = "<!-- noscript-home -->";
 
 /**
- * Fills the <noscript> block of a page with the same cards the JS draws (src/cards.ts),
- * so the no-JS version is never maintained by hand. Put PLACEHOLDER where the cards go.
+ * Fills the <noscript> block of the home page with the same page the JS draws (src/home.ts),
+ * so the no-JS version is never maintained by hand. Put PLACEHOLDER where the page goes.
  */
-export default function noscriptCards() {
+export default function noscriptHome() {
     let devServer;
 
-    // src/cards.ts uses Vite-only features (import.meta.glob), so it is loaded through Vite itself.
+    // src/home.ts uses Vite-only features (import.meta.glob), so it is loaded through Vite itself.
     const render = async (server) => {
         const { initAscii } = await server.ssrLoadModule("/src/ascii.ts");
-        const { buildHomeCards } = await server.ssrLoadModule("/src/cards.ts");
-        const { renderHomeHead, renderHomeEnd } = await server.ssrLoadModule("/src/home.ts");
+        const { renderHome } = await server.ssrLoadModule("/src/home.ts");
         initAscii();
-        const cards = Object.entries(buildHomeCards())
-            .map(([id, card]) => `<div class="card" id="${id}">\n<pre>\n${card.toHtml()}</pre>\n</div>`)
-            .join("\n");
-        return `${renderHomeHead(new Date())}\n<div class="card-container">\n${cards}\n</div>\n${renderHomeEnd()}`;
+        return renderHome(new Date());
     };
 
     return {
-        name: "noscript-cards",
+        name: "noscript-home",
         configureServer(server) {
             devServer = server;
         },
