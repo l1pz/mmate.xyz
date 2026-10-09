@@ -26,6 +26,12 @@ describe("blog card", () => {
         }
     });
 
+    it("draws the typewriter above the list", () => {
+        const text = buildBlogCard([post("a", "2026-01-01")], 41, 32).toString();
+        expect(text.indexOf("_m_______m_")).toBeGreaterThan(-1);
+        expect(text.indexOf("_m_______m_")).toBeLessThan(text.indexOf("2026-01-01"));
+    });
+
     it("shows a message when there are no posts", () => {
         expect(buildBlogCard([], 41, 32).toString()).toContain("no posts yet");
     });

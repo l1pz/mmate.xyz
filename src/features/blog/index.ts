@@ -17,6 +17,8 @@ export function buildBlogCard(posts: Post[], width: number, height: number, bord
         "blog",
         (card) => {
             card.emptyLine(1);
+            card.drawAsciiArtCentered("typewriter");
+            card.emptyLine(2);
             if (posts.length === 0) {
                 card.drawTextCentered("no posts yet");
                 return;

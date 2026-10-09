@@ -47,4 +47,4 @@ export default {
 
 ### Blog loader (`src/features/blog/`)
 `frontmatter.ts` (pure parser/validator: `parseFrontmatter`, `parsePost`), `posts.ts` (`loadPosts`, `getPosts()` newest first, `getPost(slug)`), `posts/*.md` (title, date `YYYY-MM-DD`, optional `tags: [a, b]`, optional `slug`, defaulting to the filename). Bad frontmatter or a duplicate slug throws at load time. 
-`index.ts` is the feature object: `card()` builds the home tile (`buildBlogCard`: newest 5 posts, one row each, titles truncated, rows link to `/blog/#slug`, "no posts yet" when empty). No reading page yet. `buildHomeCards` calls `blog.card()` directly; `src/index.ts` does not iterate a features list until a second feature exists.
+`index.ts` is the feature object: `card()` builds the home tile (`buildBlogCard`: newest 5 posts, typewriter art on top, one row each, titles truncated, rows link to `/blog/#slug`, "no posts yet" when empty). No reading page yet. `buildHomeCards` calls `blog.card()` directly; `src/index.ts` does not iterate a features list until a second feature exists.
