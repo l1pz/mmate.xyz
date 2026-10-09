@@ -183,3 +183,35 @@ body.shell {
         padding: 0.6em 0;
     }
 }
+
+/* The right side of the status line: clock, progress bar, percentage. Phones keep only the percentage. */
+#meters {
+    color: var(--gray);
+    white-space: pre;
+}
+
+#meters .bar {
+    color: var(--yellow);
+}
+
+#meters .pct {
+    color: var(--fg);
+}
+
+@media (max-width: 599px) {
+    #meters .clock {
+        display: none;
+    }
+}
+
+@media (max-width: 499px) {
+    #meters .bar {
+        display: none;
+    }
+}
+
+/* Hidden messages: dim, and the same width on every page. */
+.secret {
+    margin: 0 0 1.4em;
+    word-break: keep-all;
+}
