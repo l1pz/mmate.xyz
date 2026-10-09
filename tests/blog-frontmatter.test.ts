@@ -47,3 +47,21 @@ describe("parsePost", () => {
         expect(() => parsePost("---\ntitle: T\ndate: 2026-01-02\ntags: a\n---\n", "a.md")).toThrow(/tags/);
     });
 });
+
+describe("secret", () => {
+    const raw = (extra: string) => `---\ntitle: t\ndate: 2026-10-10\n${extra}---\nbody`;
+
+    it("is optional", () => {
+        expect(parsePost(raw(""), "a.md").secret).toBeUndefined();
+    });
+
+    it("is kept when given", () => {
+        expect(parsePost(raw("secret: hello there\n"), "a.md").secret).toBe("hello there");
+    });
+
+    it("is rejected when empty, a list or too long", () => {
+        expect(() => parsePost(raw("secret:\n"), "a.md")).toThrow(/a\.md: secret/);
+        expect(() => parsePost(raw("secret: [a, b]\n"), "a.md")).toThrow(/secret/);
+        expect(() => parsePost(raw(`secret: ${"x".repeat(33)}\n`), "a.md")).toThrow(/32/);
+    });
+});

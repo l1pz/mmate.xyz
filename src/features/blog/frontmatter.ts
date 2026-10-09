@@ -6,6 +6,8 @@ export interface PostMeta {
     date: string;
     tags: string[];
     slug: string;
+    /** Optional hidden binary message shown at the end of the post (at most 32 characters). */
+    secret?: string;
 }
 
 export interface Post extends PostMeta {
@@ -65,7 +67,11 @@ export function parsePost(raw: string, filename: string): Post {
         if (typeof slug !== "string" || !SLUG.test(slug)) throw new Error(`invalid slug "${slug}"`);
         const tags = data.tags ?? [];
         if (!Array.isArray(tags)) throw new Error("tags must be a list like [a, b]");
-        return { title, date, tags, slug, body };
+        const secret = data.secret;
+        if (secret !== undefined && (typeof secret !== "string" || secret === "" || secret.length > 32)) {
+            throw new Error("secret must be a text of at most 32 characters");
+        }
+        return { title, date, tags, slug, body, ...(secret ? { secret } : {}) };
     } catch (error) {
         throw new Error(`${filename}: ${(error as Error).message}`);
     }

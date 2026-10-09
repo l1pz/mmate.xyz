@@ -9,8 +9,9 @@
     --red: #fb4934;
     --gray: #928374;
     --bg-soft: #3c3836;
-    /* 14px, shrinking on narrow phones so 41 columns always fit: (viewport - 16px gutters) / (41 * 0.602) */
-    --font-size: min(14px, calc((100vw - 16px) / 24.68));
+    /* 14px, shrinking on narrow phones so 44 columns (41 of content plus the page gutters) always fit:
+       (viewport - 16px) / (44 * 0.602), where 0.602em is the width of one DejaVu Sans Mono character */
+    --font-size: min(14px, calc((100vw - 16px) / 26.49));
     --font: "DejaVu Sans Mono", monospace !important;
 }
 

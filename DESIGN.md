@@ -1,81 +1,76 @@
 # Design system: 1000110.xyz
 
-STATUS: IMPLEMENTED 2026-10-10 (steps 1-5 below, PR #14). Open questions below keep their defaults until the user has seen the result on a phone.
+STATUS: IMPLEMENTED 2026-10-10 (shell PR #14, consistency PR). This is the source of truth for how every page looks and behaves. Code: `src/core/` (site map, frame, status line, keys), `styles/shell.css`, `styles/theme.css`.
 
-Deviations from the first proposal: the `whoami` block says something new ("this is my cyberdeck: ...") instead of moving the about card's text, so the about card is unchanged; the blog card keeps the `date  title` rows because a full `ls -l` row does not fit in 39 columns (the blog index drops its fake permissions column under 500px for the same reason).
-
-Every page is a terminal session. Pages share one shell (the frame) and serve their own content inside it. Phones come first: most visitors arrive on one.
+Every page is a terminal session. Pages share one frame and serve their own content inside it. Phones come first: most visitors arrive on one.
 
 ## 1. The grid unit: the character cell
-- One font (DejaVu Sans Mono), one size, one character cell. Widths are in `ch`, heights in lines. Hierarchy comes from color and markers (`#`, `$`, `>`), never from font size or weight.
+- One font (DejaVu Sans Mono), one size, one character cell. Widths are in `ch`, heights in lines. Hierarchy comes from color and markers (`#`, `$`), never from font size or weight.
 - A phone shows about 40 columns (375px / 8.4px). **40 columns is the design width.** Desktop adds space around it, never a different layout language.
-- Widths: phone = full width minus a 1.5ch gutter; reading column = `min(72ch, 100%)`; card = 41 columns.
-- Small phones: the font size shrinks below ~400px wide so 41 columns always fit (`font-size: min(14px, (100vw - gutters) / 41 / 0.602)`), so a card never overflows and never needs a sideways scroll. Only code boxes may scroll sideways.
+- The reading column is `min(72ch, 100%)` with a 1.5ch gutter.
+- Small phones: the font size shrinks below ~400px wide so 44 columns (41 of content plus gutters) always fit. Only code boxes and wide art may scroll sideways.
 
 ## 2. Tokens (all in `styles/theme.css`, never raw hex elsewhere)
 | Role | Variable | Used for |
 |------|----------|----------|
 | text | `--fg` | body text |
-| secondary | `--gray` | dim text, borders, footers, crumbs, dates |
-| accent / title | `--yellow` | page and card titles, headings, current/focused thing |
+| secondary | `--gray` | dim text, borders, secrets, crumbs, dates, the `$` of a prompt |
+| accent / title | `--yellow` | page titles, headings, the current window, prompt commands |
 | structure | `--aqua` | links, h2, art accents |
-| prompt / ok | `--green` | `$` prompt lines, h3, success |
+| prompt / ok | `--green` | prompt lines, h3 |
 | visited | `--purple` | visited links, art accent |
 | error | `--red` | errors |
-| surface | `--bg`, `--bg-soft` | page background, bars and inline code |
+| surface | `--bg`, `--bg-soft` | page background, the status line and inline code |
 
-Spacing: vertical rhythm is 1.6 lines in prose; art and cards use 1.0 (tight, so the art holds its shape). The seam between the two is always a blank line or a rule, never mixed in one block.
+Spacing: prose and listings use a 1.6 line height; ASCII art uses 1.0 (tight, so it holds its shape). Blocks are separated by one blank line.
 
-## 3. The shell (shared by every page)
-Same elements, same order, same classes (`styles/shell.css`, helpers in `src/shell.ts`, pure and tested):
-1. **Crumbs**: `1000110.xyz / blog / hello-world`, gray, each part a link.
-2. **Man header**: `NAME(1)    section    date`, one dashed rule under it.
-3. **Prompt lines**: `$ command`, `$` in gray, the command in green. Every block of content is the output of a command (`$ whoami`, `$ cat posts/x.md`, `$ ls -l ~/blog`).
-4. **End prompt**: `$ █` with the blinking cursor (static under reduced motion).
-5. **Status line**: fixed at the bottom. Left = where you are (windows on the home page, file name on a post), right = state (clock, or the progress meter `[████░░░░] 42%`).
-Content between the crumbs and the end prompt is the page's own.
+## 3. The frame (every page, no exceptions)
+`renderPage({ page, command, body, date, ... })` in `src/core/shell.ts` outputs, in this fixed order:
+1. **Crumbs**: `1000110.xyz / blog / hello-world`, gray, each part but the last a link.
+2. **Man header**: `NAME(1)    section    date`, one dashed rule under it. The date is the page's own (a post's date) or today.
+3. **Prompt line**: `$ command`, the `$` dim, the command in yellow-green. Every block of content is the output of a command.
+4. **Body**: the page's own content (it may contain more prompt lines).
+5. **Secret** (optional): a hidden dim binary message.
+6. **End prompt**: `$ █` with the blinking cursor (static under reduced motion).
 
-## 4. Content patterns (what a page puts inside the shell)
-- **Prose** (blog post): left-aligned column, headings with a dim `#` marker, boxed code, dimmed quotes.
-- **Listing** (`ls -l` rows): used by the blog index and, in the same format, by the blog card.
-- **Cards** (home grid, later widgets): 41 x 32 character tiles. A card title is a command (`$ cat about`, `$ ls ~/blog`). Border gray, focused border yellow, footer binary message dim. Cards are widgets inside the shell, not the page itself.
-- **Tool / experiment** (later): the shell wraps a canvas or form; the status line shows the tool state.
-- **Gallery** (later): same shell, a listing of albums, a viewer as a post-like page.
+Page code only writes the body. The pages are listed once in `src/core/site.ts`; adding a page means one entry there plus its HTML file in `vite.config.js` (a test fails if they disagree).
 
-## 5. Phone rules (apply to every pattern)
-- One column under 750px; no page-level horizontal scroll.
-- Tap targets are at least 44px tall: the status line windows get padding on touch screens (`@media (pointer: coarse)`), and listing rows are full-width links.
-- The status line is the main navigation on phones. It must work by tap alone; keys (`hjkl`, `1`-`5`, `g/G`) are a bonus for keyboards. No feature may need hover.
-- The bottom bar respects the safe area (`env(safe-area-inset-bottom)`) so it clears the home indicator.
-- Window names shorten on narrow screens so the list fits in 40 columns (`1:me 2:proj 3:blog 4:mail 5:art`).
+## 4. The status line (every page)
+Fixed at the bottom, same on every page:
+- Left: the site windows from the site map, `1:home 2:blog 3:exp`, as links. The current page is highlighted yellow with `*`; a child page keeps its parent's window. This is the navigation on phones.
+- Right: a clock and the scroll progress, `23:41 [████░░░░] 42%`. Under 600px the clock hides, under 500px the bar hides, so a phone shows `42%`.
+- It clears the iPhone home indicator (`env(safe-area-inset-bottom)`), and on touch screens each window is at least 44px tall.
+
+## 5. Keys (every page; only a bonus, everything works by tap)
+`1`-`9` go to site window N, `j`/`k` scroll, `g`/`G` top and bottom, `b` or Esc go up one level (a blog post goes back to the list, otherwise the parent page or home). Space, PageUp, PageDown and the arrows scroll natively.
+
+## 6. Content patterns (what a page puts in the body)
+| pattern | pages | looks like |
+|---------|-------|------------|
+| session | home | one command per section: `$ whoami`, `$ cat portrait.txt`, `$ ls ~/blog`, ... with ASCII art in tight blocks |
+| listing | blog index, experiments, the lists on the home page | rows of one link each (`ls -l` style); the row is the tap target (44px on touch) |
+| prose | a blog post | left-aligned column, headings with a dim `#` marker, boxed code, dimmed quotes |
+| tool | an experiment | the frame, with the canvas or form as the body |
+| later | gallery, oracle | gallery: listing of albums, a post-like viewer; oracle: a feed inside the frame |
+Cards (the fixed 41 x 32 character tile, `src/card.ts`) are not a page pattern. The engine stays as a toolkit for future widgets.
+
+## 7. Hidden messages (easter eggs)
+Dim binary text, 4 bytes (35 columns) per line, `aria-hidden`, no hint that it is there, no decode, no animation. A page may have one in the frame's `secret` slot (a blog post sets `secret:` in its frontmatter, at most 32 characters); the home page has one under the portrait, projects and contact sections.
+
+## 8. Phone rules (apply to every pattern)
+- One column, no page-level horizontal scroll (code boxes and wide art may scroll inside their own block).
+- Tap targets at least 44px tall on touch screens (`pointer: coarse`): status line windows, crumbs, listing rows.
+- No feature may need hover or a keyboard.
 - No motion beyond the cursor blink; honor `prefers-reduced-motion`.
-- Test every UI change at 360px and 390px wide, not only on desktop.
+- Check every UI change at 360px and 390px wide, not only on desktop.
 
-## 6. Home page under this system
-```
-1000110.xyz
-1000110.XYZ(1)          home         2026-10-10
-- - - - - - - - - - - - - - - - - - - - - - - -
-$ whoami
-máté molnár - computer enthusiast,
-recreational programmer.
+## 9. How to add a page
+1. Add an entry to `pages` in `src/core/site.ts` (child pages set `parent` and get no window).
+2. Create the HTML file (copy `experiments/index.html`: `body class="shell"`, a `<main class="page">`, `<footer id="status">`, a `<noscript>` note, `viewport-fit=cover`) and list it in `vite.config.js`.
+3. Build the body and call `renderPage` (or `mountPage` for a single block); then `bootPage`.
+4. Test the renderer with `assertShell`. `npm run check` fails if a step is missing.
 
-$ ls cards/
-(the cards, one column on a phone, up to 4 on desktop)
-
-$ █
- 1:me 2:proj 3:blog 4:mail 5:art          23:41
-```
-The short introduction moves from the about card into the `whoami` block; the about card keeps the portrait.
-
-## 7. Implementation order (proposal)
-1. `styles/shell.css` + `src/shell.ts`: crumbs, man header, prompt, end prompt; the blog is refactored to use them (no visual change).
-2. Phone rules: fluid font size, safe area, tap targets, short window names; check at 360 and 390 wide.
-3. Home page gets the shell, the `whoami` block and command-style card titles.
-4. Blog card rows: kept as `date  title` (see deviations above).
-5. Record the rules in `AGENTS.md` ("new pages use the shell in DESIGN.md") and add decisions to `DECISIONS.md`.
-Each step is its own commit and is reviewable on its own.
-
-## Open questions (defaults in brackets)
-- [Keep the stack] Do the five stacked cards on a phone feel too long (about 2000px of scrolling)? The status line jumps between them. If not, a compact `ls`-style card index at the top could replace the long stack on phones.
-- [Keep centered] Should card text stay centered, or become left-aligned like the rest of the shell? Centered keeps the cyberdeck look; left-aligned would be more consistent.
+## 10. History and rejected ideas
+- The home page used to be a grid of 41 x 32 cards. Beside the blog it felt like a different site (centered text, equal tiles, no prompt), so it became a session; the card engine, its colors and its tests stayed.
+- The man header date: a page's own date where it has one, today otherwise (decided 2026-10-10). A blinking clock colon was declined.
+- Still open: do the stacked sections of the home page feel too long on a phone? Should art and listings go two columns on very wide screens?

@@ -1,10 +1,11 @@
+import { bootPage } from "../../core/boot";
 import { escapeHtml } from "../../core/html";
-import { crumbs, endPrompt, manHeader, promptLine } from "../../core/shell";
+import { isoDate, renderPage } from "../../core/shell";
+import { crumbTrail, getPage } from "../../core/site";
 import type { Post } from "./frontmatter";
 import { renderMarkdown } from "./markdown";
 import { getPost, getPosts } from "./posts";
-
-export const BAR_WIDTH = 20;
+import { postRows } from "./rows";
 
 export type Route = { view: "index" } | { view: "post"; slug: string };
 
@@ -14,108 +15,82 @@ export function parseRoute(hash: string): Route {
     return slug === "" ? { view: "index" } : { view: "post", slug };
 }
 
-export const wordCount = (text: string) => text.split(/\s+/).filter(Boolean).length;
+const blog = () => getPage("blog");
+/** Crumbs for a page inside the blog: the "blog" crumb goes back to the list (an in-page hash change). */
+const trail = (slug: string) => crumbTrail(blog(), slug, "#");
 
-/** How far down the page the reader is, 0 to 1. A page that fits the window counts as fully read. */
-export function scrollFraction(scrollTop: number, scrollHeight: number, clientHeight: number): number {
-    const max = scrollHeight - clientHeight;
-    return max <= 0 ? 1 : Math.min(1, Math.max(0, scrollTop / max));
+/** The `/blog/` list, drawn like `ls -l`. `today` is the man header date. */
+export function renderIndex(posts: Post[], today: string): string {
+    return renderPage({
+        page: blog(),
+        command: "ls -l ~/blog",
+        date: today,
+        body: `<p class="dim">total ${posts.length}</p>\n${postRows(posts)}`,
+        secret: "keep writing",
+    });
 }
 
-/** The pager status line text: `name  [████░░░░░░░░░░░░░░░░]  20%`. */
-export function statusLine(name: string, fraction: number): string {
-    const filled = Math.round(fraction * BAR_WIDTH);
-    const bar = "█".repeat(filled) + "░".repeat(BAR_WIDTH - filled);
-    return `${name}  [${bar}] ${String(Math.round(fraction * 100)).padStart(3)}%`;
-}
-
-const HOME = { label: "1000110.xyz", href: "/" };
-const trail = (last?: string) =>
-    last ? [HOME, { label: "blog", href: "#" }, { label: last }] : [HOME, { label: "blog" }];
-
-/** The `/blog/` list, drawn like `ls -l`. */
-export function renderIndex(posts: Post[]): string {
-    // Each row is one link, so the whole line is a tap target.
-    const rows = posts.map(
-        (p) =>
-            `<a class="row" href="#${encodeURIComponent(p.slug)}"><span class="dim perm">-rw-r--r--</span> ${String(wordCount(p.body)).padStart(5)}w ` +
-            `<span class="dim">${p.date}</span> ${escapeHtml(p.title)}` +
-            `${p.tags.length ? ` <span class="dim">[${escapeHtml(p.tags.join(", "))}]</span>` : ""}</a>`,
-    );
-    return [
-        crumbs(trail()),
-        promptLine("ls -l ~/blog"),
-        `<p class="dim">total ${posts.length}</p>`,
-        ...(rows.length ? rows : ['<p class="dim">(nothing here yet)</p>']),
-    ].join("\n");
-}
-
-/** One post: a man-page header, the text, and a prompt with a blinking cursor at the end. */
+/** One post, with the post's own date and optional `secret`. */
 export function renderPost(post: Post): string {
     const tags = post.tags.length ? `<p class="dim">tags: ${escapeHtml(post.tags.join(", "))}</p>` : "";
-    return [
-        crumbs(trail(post.slug)),
-        manHeader(post.slug, "blog", post.date),
-        promptLine(`cat posts/${post.slug}.md`),
-        `<h1 class="title">${escapeHtml(post.title)}</h1>`,
-        tags,
-        `<article>${renderMarkdown(post.body)}</article>`,
-        endPrompt(),
-    ].join("\n");
+    return renderPage({
+        page: blog(),
+        trail: trail(post.slug),
+        name: post.slug,
+        command: `cat posts/${post.slug}.md`,
+        date: post.date,
+        body: [
+            `<h1 class="title">${escapeHtml(post.title)}</h1>`,
+            tags,
+            `<article>${renderMarkdown(post.body)}</article>`,
+        ].join("\n"),
+        secret: post.secret,
+    });
 }
 
-export function renderNotFound(slug: string): string {
-    return [
-        crumbs(trail(slug)),
-        promptLine(`cat posts/${slug}.md`),
-        `<p class="error">cat: posts/${escapeHtml(slug)}.md: no such file</p>`,
-        '<p><a href="#">cd ~/blog</a></p>',
-    ].join("\n");
+export function renderNotFound(slug: string, today: string): string {
+    return renderPage({
+        page: blog(),
+        trail: trail(slug),
+        name: "error",
+        command: `cat posts/${slug}.md`,
+        date: today,
+        body: [
+            `<p class="error">cat: posts/${escapeHtml(slug)}.md: no such file</p>`,
+            '<p><a href="#">cd ~/blog</a></p>',
+        ].join("\n"),
+    });
 }
 
-/** Draws the page into `el` and wires up the hash routing, the status line and the vim-style keys. */
+/** Draws the page into `el` and wires up the hash routing, the shared status line and the shared keys. */
 export async function mount(el: Element): Promise<void> {
-    el.innerHTML = '<main id="content" class="page"></main><footer id="status"></footer>';
+    el.innerHTML = '<main id="content" class="page"></main>';
     const content = el.querySelector<HTMLElement>("#content");
-    const status = el.querySelector<HTMLElement>("#status");
-    if (!content || !status) return;
+    if (!content) return;
 
-    let name = "~/blog";
-    const updateStatus = () => {
-        const root = document.documentElement;
-        status.textContent = statusLine(name, scrollFraction(root.scrollTop, root.scrollHeight, root.clientHeight));
-    };
+    // "up" from a post is the list; from the list it is home (the default).
+    const status = bootPage(blog(), {
+        up: () => {
+            if (location.hash) location.hash = "";
+            else location.href = "/";
+        },
+    });
 
     const show = () => {
+        const today = isoDate(new Date());
         const route = parseRoute(location.hash);
         if (route.view === "index") {
-            content.innerHTML = renderIndex(getPosts());
-            name = "~/blog";
+            content.innerHTML = renderIndex(getPosts(), today);
             document.title = "blog - 1000110.xyz";
         } else {
             const post = getPost(route.slug);
-            content.innerHTML = post ? renderPost(post) : renderNotFound(route.slug);
-            name = post ? `${post.slug}.md` : "error";
+            content.innerHTML = post ? renderPost(post) : renderNotFound(route.slug, today);
             document.title = `${post ? post.title : "not found"} - 1000110.xyz`;
         }
         window.scrollTo(0, 0);
-        updateStatus();
+        status.update();
     };
 
-    const lineStep = () => (Number.parseFloat(getComputedStyle(content).lineHeight) || 20) * 3;
     window.addEventListener("hashchange", show);
-    window.addEventListener("scroll", updateStatus, { passive: true });
-    window.addEventListener("resize", updateStatus);
-    window.addEventListener("keydown", (e) => {
-        if (e.ctrlKey || e.metaKey || e.altKey) return;
-        // Space, PageUp and PageDown already scroll natively.
-        if (e.key === "j" || e.key === "ArrowDown") window.scrollBy({ top: lineStep() });
-        else if (e.key === "k" || e.key === "ArrowUp") window.scrollBy({ top: -lineStep() });
-        else if (e.key === "g") window.scrollTo(0, 0);
-        else if (e.key === "G") window.scrollTo(0, document.documentElement.scrollHeight);
-        else if (e.key === "b" || e.key === "Escape") location.hash = "";
-        else return;
-        e.preventDefault();
-    });
     show();
 }

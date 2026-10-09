@@ -5,27 +5,6 @@ body.shell {
     user-select: text;
 }
 
-/* The home page: as wide as its card grid, header text lines up with the first card. */
-.home {
-    box-sizing: content-box;
-    width: calc(var(--cols) * 41ch + (var(--cols) - 1) * 2ch);
-    max-width: calc(100% - 16px);
-    margin: 0 auto;
-    padding: 1.5em 8px 2em;
-}
-
-.home p {
-    margin: 0 0 1.4em;
-}
-
-.home .card-container {
-    margin-bottom: 1.4em;
-}
-
-.name {
-    color: var(--yellow);
-}
-
 /* A column of shell content. Cards do not live in here (they keep their own tight spacing). */
 .page {
     width: min(72ch, 100%);
@@ -131,31 +110,6 @@ body.shell {
     color: var(--bg);
 }
 
-#clock {
-    color: var(--gray);
-}
-
-/* Window names: long on wide screens, short on phones so the list fits in 40 columns. */
-#status .win .short {
-    display: none;
-}
-
-@media (max-width: 499px) {
-    #status .win .long {
-        display: none;
-    }
-
-    #status .win .short {
-        display: inline;
-    }
-}
-
-@media (max-width: 599px) {
-    #clock {
-        display: none;
-    }
-}
-
 /* Touch screens: every tap target is at least 44px tall. */
 @media (pointer: coarse) {
     #status {
@@ -182,4 +136,71 @@ body.shell {
     .row {
         padding: 0.6em 0;
     }
+}
+
+/* The right side of the status line: clock, progress bar, percentage. Phones keep only the percentage. */
+#meters {
+    color: var(--gray);
+    white-space: pre;
+}
+
+#meters .bar {
+    color: var(--yellow);
+}
+
+#meters .pct {
+    color: var(--fg);
+}
+
+@media (max-width: 599px) {
+    #meters .clock {
+        display: none;
+    }
+}
+
+@media (max-width: 499px) {
+    #meters .bar {
+        display: none;
+    }
+}
+
+/* Hidden messages: dim, and the same width on every page. */
+.secret {
+    margin: 0 0 1.4em;
+    word-break: keep-all;
+}
+
+/* ASCII art keeps tight spacing so it holds its shape; wide pieces scroll sideways instead of overflowing. */
+.art {
+    line-height: 1em;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.name {
+    color: var(--yellow);
+}
+
+/* The listing pattern (blog index, home sections, experiments): each row is one link, a full width tap target. */
+.row {
+    display: block;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.row:hover {
+    background: var(--bg-soft);
+}
+
+/* The fake permissions column is for wide screens; phones need the room for the title. */
+@media (max-width: 499px) {
+    .row .perm {
+        display: none;
+    }
+}
+
+/* A list is followed by the same gap as any block. */
+.row + p {
+    margin-top: 1.4em;
 }

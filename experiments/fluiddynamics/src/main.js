@@ -1,9 +1,15 @@
+import { mountPage } from "/src/core/boot.ts";
+
 let ctx;
 let width;
 let height;
 
 document.addEventListener("DOMContentLoaded", main);
 function main() {
+    mountPage(document.querySelector("#experiment"), "fluiddynamics", {
+        command: "./fluiddynamics",
+        body: "<canvas></canvas>",
+    });
     const canvas = document.querySelector("canvas");
     width = canvas.width;
     height = canvas.height;

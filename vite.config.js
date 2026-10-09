@@ -1,12 +1,12 @@
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
-import noscriptCards from "./plugins/noscript-cards.js";
+import noscriptHome from "./plugins/noscript-home.js";
 
 const page = (path) => resolve(import.meta.dirname, path);
 
 // Every HTML page must be listed here, or it is missing from the production build.
 export default defineConfig({
-    plugins: [noscriptCards()],
+    plugins: [noscriptHome()],
     build: {
         rollupOptions: {
             input: {

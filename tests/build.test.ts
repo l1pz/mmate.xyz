@@ -1,8 +1,8 @@
 import { execSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { beforeAll, describe, expect, it } from "vitest";
-import { initAscii } from "../src/ascii";
-import { buildHomeCards } from "../src/cards";
+import { pages } from "../src/core/site";
+import { assertShell } from "./helpers/shell";
 
 // Guards against "build passes but the deployed site is broken".
 describe("production build", () => {
@@ -22,18 +22,25 @@ describe("production build", () => {
         expect(existsSync("dist/fonts/DejaVuSansMono.woff2")).toBe(true);
     });
 
-    it("generates the <noscript> cards from the same code as the JS cards", () => {
+    it("gives every page in the site map the shell, a status line and the phone viewport", () => {
+        for (const page of pages) {
+            const html = readFileSync(`dist/${page.path.replace(/^\//, "")}index.html`, "utf8");
+            expect(html, page.id).toContain('<body class="shell">');
+            expect(html, page.id).toContain('id="status"');
+            expect(html, page.id).toContain("viewport-fit=cover");
+            expect(html, page.id).toContain("<noscript>");
+        }
+    });
+
+    it("generates the <noscript> home page from the same code as the JS page", () => {
         const html = readFileSync("dist/index.html", "utf8");
         const noscript = html.slice(html.indexOf("<noscript>"), html.indexOf("</noscript>"));
-        expect(noscript).not.toContain("noscript-cards"); // placeholder was replaced
-        expect(noscript.match(/<pre>/g)).toHaveLength(5);
-
-        // The art card is random, so compare the fixed ones verbatim.
-        initAscii();
-        const cards = buildHomeCards();
-        for (const id of ["aboutme", "projects", "blog", "contact"]) {
-            expect(noscript).toContain(cards[id].toHtml());
+        expect(noscript).not.toContain("noscript-home"); // placeholder was replaced
+        assertShell(noscript);
+        for (const part of ["whoami", "cat portrait.txt", "ls ~/blog", "cat contact.txt"]) {
+            expect(noscript).toContain(part);
         }
         expect(noscript).toContain('<a href="mailto:mmateka89@gmail.com">');
+        expect(noscript).toContain('class="secret dim"');
     });
 }, 60_000);
