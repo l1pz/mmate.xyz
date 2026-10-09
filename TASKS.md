@@ -122,3 +122,4 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ### Session 10 (2026-10-10)
 - Done (branch `feat/consistency`): every page (home, blog index/post/not found, experiments, fluid dynamics) goes through `renderPage` and one status line; home is a session; cards retired from pages (engine kept); guard tests added. Checked in the browser at desktop and 360px; real phones still untested.
 - Next: user looks; then Phase 2 "RSS feed script" (can also generate the post index the home page needs later) or the parked home ideas (command prompt first).
+- Also: the two sample posts (`hello-world`, `markdown-demo`) are removed; `posts/` keeps a `.gitkeep`, so the blog and the home blog section show "(nothing here yet)" until the first real post. Tests no longer depend on bundled posts (`blog-rows.test.ts` uses fixtures). Markdown features are still shown in `tests/blog-markdown.test.ts`.

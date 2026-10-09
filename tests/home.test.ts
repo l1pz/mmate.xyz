@@ -38,7 +38,6 @@ describe("renderHome", () => {
 
     it("lists the newest posts with links into the blog, at most HOME_POSTS", () => {
         const page = html();
-        expect(page).toContain('href="/blog/#hello-world"');
         expect((page.match(/class="row" href="\/blog\//g) ?? []).length).toBeLessThanOrEqual(HOME_POSTS);
     });
 

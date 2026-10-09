@@ -23,9 +23,13 @@ describe("loadPosts", () => {
 });
 
 describe("bundled posts", () => {
-    it("loads the sample post", () => {
-        expect(getPosts().length).toBeGreaterThan(0);
-        expect(getPost("hello-world")?.title).toBe("hello world");
+    it("loads whatever is in posts/, every post valid", () => {
+        for (const p of getPosts()) {
+            expect(p.slug).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+            expect(p.title).not.toBe("");
+            expect(p.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+            expect(getPost(p.slug)).toBe(p);
+        }
         expect(getPost("nope")).toBeUndefined();
     });
 });
