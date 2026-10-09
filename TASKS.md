@@ -24,6 +24,17 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [x] TUI reading view with progress meter (pager-style page, not a card; see DECISIONS.md)
 - [ ] RSS feed script
 
+## Phase 2b: Home page charm (the home grid should feel like a program, like the blog page)
+- [ ] Color pass: card titles yellow, borders gray, binary footers dim gray, accent colors on art (card engine style spans; `<noscript>` follows)
+- [ ] tmux-style status bar on the home page: window list `1:about 2:projects 3:blog ...` (focused one marked) + live clock; shares its CSS with the blog status line
+- [ ] Keyboard navigation: h/j/k/l or arrows move a highlight between cards (focused border turns yellow), Enter follows the card's first link, 1-5 jump to a card, Esc clears
+
+### Home page ideas (parked, in rough priority; user liked all of them)
+- Command prompt `$ _` on the home page: `help`, `ls`, `blog`, `cat about`, `theme`; the place for easter eggs (`sudo`, `xyzzy`, `rm -rf /`, random `fortune` line)
+- Boot sequence on the first visit per session: a few typed lines (`1000110.xyz cyberdeck v0.1 ... ok`), then the cards print in; skippable with any key; keep it short
+- Living cards: clock, a "now" card (building / listening), the typewriter typing a line, animated art; the Oracle is the big version
+- Later, on the blog: table-of-contents widget card beside a post (wide screens), build-time `<noscript>` posts
+
 ## Phase 3: Tools
 - [ ] Binary / Base64 / Hex / ROT13 playground
 - [ ] Image to ASCII / dither studio
