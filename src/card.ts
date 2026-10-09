@@ -1,5 +1,6 @@
 import { ascii } from "./ascii";
 import type { BorderStyle } from "./borders";
+import { binaryLines } from "./core/binary";
 
 export interface Link {
     /** Part of the text that becomes the link. Defaults to the whole text. */
@@ -113,11 +114,8 @@ export default class Card {
     }
 
     drawBinaryTextCentered(text: string, style?: CardStyle): void {
-        const perLine = Math.floor(this.cols / 9);
-        text = text.padEnd(Math.ceil(text.length / perLine) * perLine, " ");
-        const bytes = Array.from(text, (c) => c.charCodeAt(0).toString(2).padStart(8, "0"));
-        for (let i = 0; i < bytes.length; i += perLine) {
-            this.drawTextCentered(bytes.slice(i, i + perLine).join(" "), undefined, style);
+        for (const line of binaryLines(text, Math.floor(this.cols / 9))) {
+            this.drawTextCentered(line, undefined, style);
         }
     }
 

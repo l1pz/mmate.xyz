@@ -1,10 +1,7 @@
 /** The home page shell around the card grid (DESIGN.md): crumbs, man header, `$ whoami`, `$ ls cards/`, end prompt. */
-import { crumbs, endPrompt, manHeader, promptLine } from "./core/shell";
+import { crumbs, endPrompt, isoDate, manHeader, promptLine } from "./core/shell";
 
-const two = (n: number) => String(n).padStart(2, "0");
-
-/** `2026-10-10`, local time. */
-export const isoDate = (d: Date) => `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`;
+export { isoDate } from "./core/shell";
 
 /** Everything above the cards. */
 export function renderHomeHead(date: Date): string {
