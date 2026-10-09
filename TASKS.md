@@ -24,6 +24,13 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [x] TUI reading view with progress meter (pager-style page, not a card; see DECISIONS.md)
 - [ ] RSS feed script
 
+## Phase 2a: Design system (DESIGN.md)
+- [x] Step 1: shared shell (`src/core/shell.ts`, `styles/shell.css`); the blog uses it
+- [x] Step 2: phone rules (fluid font under ~400px, safe area, tap targets, short window names; checked at 360 and 390)
+- [x] Step 3: home charm (colors, status bar, keyboard navigation) merged in; home page gets the shell, a `whoami` block and command-style card titles
+- [x] Step 4: blog card rows (kept as `date  title`, see DESIGN.md)
+- [x] Step 5: rules into `AGENTS.md` and `DECISIONS.md`
+
 ## Phase 2b: Home page charm (the home grid should feel like a program, like the blog page)
 - [x] Color pass: card titles yellow, borders gray, binary footers dim gray, accent colors on art (card engine style spans; `<noscript>` follows)
 - [x] tmux-style status bar on the home page: window list `1:about 2:projects 3:blog ...` (focused one marked) + live clock; shares its CSS with the blog status line
@@ -99,3 +106,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ### Session 8 (2026-10-09)
 - Done: home page charm 1-3 (branch `feat/home-charm`): card color styles, tmux-style status bar with clock, h/j/k/l + number-key navigation with a yellow focus border. Ideas 4-6 stay parked in this file. Not yet eyeballed by the user.
 - Next: user looks at the home page; then Phase 2 "RSS feed script" or the parked home ideas (command prompt first).
+
+### Session 9b (2026-10-10)
+- Done: whole redesign in PR #14: #12 merged into the branch (and closed), phone rules, home page on the shell (`src/home.ts`, command-style card titles, whoami block), blog rows are full-width links, DESIGN.md/AGENTS.md/DECISIONS.md updated. Checked in the browser at desktop, 390px and 360px (narrow iframes; real phones and `pointer: coarse` still untested).
+- Next: user looks on a real phone; then Phase 2 "RSS feed script" or the parked home ideas (command prompt first).
