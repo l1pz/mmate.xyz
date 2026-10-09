@@ -35,12 +35,14 @@ describe("blog card", () => {
     it("fits 5 posts plus the binary footer in every border", () => {
         const posts = Array.from({ length: 5 }, (_, i) => post(`p${i}`, "2026-01-01", "x".repeat(80)));
         for (const style of [null, ...Object.values(borders)]) {
-            const text = buildBlogCard(posts, 41, 32, style).toString();
-            expect(text).toContain("01101011 01100101 01100101 01110000"); // "keep"
+            const lines = buildBlogCard(posts, 41, 32, style).toString().split("\n");
+            expect(lines.slice(26, 30).every((l) => /[01]{8}/.test(l))).toBe(true);
         }
     });
 
-    it("shows a message when there are no posts", () => {
-        expect(buildBlogCard([], 41, 32).toString()).toContain("no posts yet");
+    it("shows a message when there are no posts, footer still at the bottom", () => {
+        const lines = buildBlogCard([], 41, 32).toString().split("\n");
+        expect(lines.join("\n")).toContain("no posts yet");
+        expect(lines.slice(26, 30).every((l) => /[01]{8}/.test(l))).toBe(true);
     });
 });
