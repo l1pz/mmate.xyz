@@ -88,7 +88,7 @@ One list of pages: `id`, `path`, `name` (status window), `section`, `pattern`. E
 
 | id | path | window | pattern | content |
 |----|------|--------|---------|---------|
-| home | `/` | `1:home` | grid | `$ whoami`, `$ ls cards/`, the cards |
+| home | `/` | `1:home` | session | one command per section: `$ whoami`, `$ cat portrait.txt`, `$ ls ~/blog`, `$ ls projects/`, `$ cat contact.txt`, `$ cat l'art.txt`; no cards |
 | blog | `/blog/` | `2:blog` | listing, then prose | `$ ls -l ~/blog`; a post is `$ cat posts/x.md` |
 | experiments | `/experiments/` | `3:exp` | listing | `$ ls experiments/`, one row per experiment (replaces the lone WIP card) |
 | fluid dynamics | `/experiments/fluiddynamics/` | (child of exp) | tool | shell header, canvas inside |
@@ -99,13 +99,12 @@ Every page, JS or `<noscript>`, is `renderPage({ page, command, body })`, which 
 
 ### 8.3 One status line (`src/core/statusline.ts`)
 - Left: the site windows from the site map (`1:home 2:blog 3:exp`), the current page highlighted with `*`, each a link with a 44px tap target. This is the site navigation on phones.
-- Right: scroll progress `[████░░░░] 42%` on every page; on phones just `42%` so everything fits 40 columns. The clock goes away (parked as a living-card idea).
-- The home page's card windows are removed; cards are reached by `h/j/k/l`, arrows, tap, or scrolling.
+- Right: a clock and scroll progress, `23:41 [████░░░░] 42%`, on every page. Under 600px wide only `42%` shows, so everything fits 40 columns.
+- The home page's card windows are removed along with the cards (8.8).
 
 ### 8.4 One key vocabulary
 - Everywhere: `1`-`9` jump to site window N, `g`/`G` top and bottom.
-- Prose and listing pages: `j`/`k` scroll, `b` or Esc goes up one level.
-- Grid pages (home): `h/j/k/l` move between cards, `Enter` opens, Esc clears.
+- Every page is a scrolling column, so `j`/`k` scroll everywhere; `b` or Esc goes up one level.
 - Keys are only a bonus; every action also works by tap.
 
 ### 8.5 Guards so it cannot drift again
@@ -122,6 +121,13 @@ Every page, JS or `<noscript>`, is `renderPage({ page, command, body })`, which 
 5. Experiments index as a listing; fluid dynamics gets the shell header around its canvas.
 6. Guard tests, then fold this section into sections 3-6 and update `AGENTS.md`, `DECISIONS.md`.
 
-### 8.7 Open questions
-- Man header date: today's date at runtime (build date in `<noscript>`), or each page's own date (post date on posts)? Default: own date where the page has one, today otherwise.
-- The clock is dropped. Keep it as a fourth, optional status element on wide screens?
+### 8.7 Decisions (user, 2026-10-10)
+- Man header date: each page's own date where it has one (a post), today otherwise.
+- The clock stays, on the right of the status line next to the progress meter, on wide screens.
+
+### 8.8 Cards retire from the home page
+The 41 x 32 tile forced a fixed width, equal weight for every block and centered text, so the home page worked unlike every other page. The home page becomes a session like the blog (one column, one command per section, left-aligned text, hidden binary messages kept as dim lines at the end of the about, projects and contact sections).
+- Kept (engine, for later widgets such as a table-of-contents card, the Oracle or a clock): `src/card.ts`, `borders.ts`, `ascii.ts`, the color styles and `.card` CSS, with their tests.
+- Removed: the home card grid and `.home`/`.card-container` layout, `src/cards.ts` home cards, the blog card, `src/keynav.ts`, the card window list (`src/statusbar.ts`), card focus in `src/index.ts`. Git history keeps them.
+- The `<noscript>` plugin renders the same home body function as the JS page; no card rendering involved.
+- Implementation order step 4 becomes "home as a session", and step 6 also deletes the dead code and updates ARCHITECTURE.md.
