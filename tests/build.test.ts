@@ -12,6 +12,7 @@ describe("production build", () => {
 
     it("contains every page", () => {
         expect(existsSync("dist/index.html")).toBe(true);
+        expect(existsSync("dist/blog/index.html")).toBe(true);
         expect(existsSync("dist/experiments/index.html")).toBe(true);
         expect(existsSync("dist/experiments/fluiddynamics/index.html")).toBe(true);
     });

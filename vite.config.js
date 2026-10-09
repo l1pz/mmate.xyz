@@ -11,6 +11,7 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 main: page("index.html"),
+                blog: page("blog/index.html"),
                 experiments: page("experiments/index.html"),
                 fluiddynamics: page("experiments/fluiddynamics/index.html"),
             },

@@ -15,7 +15,7 @@ Pure logic, fully tested (`tests/card.test.ts`). The only DOM touch is `render()
 
 ## Files
 ```
-index.html, experiments/**/index.html   pages (all listed in vite.config.js)
+index.html, blog/index.html, experiments/**/index.html   pages (all listed in vite.config.js)
 src/ascii-art/                        ASCII art (.ascii), bundled at build time
 src/ascii.ts                            loads the bundled art
 src/card.ts                             card engine
@@ -47,4 +47,11 @@ export default {
 
 ### Blog loader (`src/features/blog/`)
 `frontmatter.ts` (pure parser/validator: `parseFrontmatter`, `parsePost`), `posts.ts` (`loadPosts`, `getPosts()` newest first, `getPost(slug)`), `posts/*.md` (title, date `YYYY-MM-DD`, optional `tags: [a, b]`, optional `slug`, defaulting to the filename). Bad frontmatter or a duplicate slug throws at load time. 
-`index.ts` is the feature object: `card()` builds the home tile (`buildBlogCard`: newest 5 posts, typewriter art on top, one row each, titles truncated, rows link to `/blog/#slug`, "no posts yet" when empty). No reading page yet. `buildHomeCards` calls `blog.card()` directly; `src/index.ts` does not iterate a features list until a second feature exists.
+`index.ts` is the feature object: `card()` builds the home tile (`buildBlogCard`: newest 5 posts, typewriter art on top, one row each, titles truncated, rows link to `/blog/#slug`, "no posts yet" when empty). Also exports `page: { path: "/blog/", mount }` (the reader, imported lazily). `buildHomeCards` calls `blog.card()` directly; `src/index.ts` does not iterate a features list until a second feature exists.
+
+### Blog reader (`/blog/`, `src/blog.ts`, `styles/blog.css`)
+Cards are for the home grid and widgets. Posts are read on a normal page styled as a pager: native scrolling, a 72ch column, real HTML (clickable links, selectable text), a fixed status line at the bottom with the progress meter (`name  [████░░░░] 42%`).
+- Routing by hash: `/blog/` is the list (drawn like `ls -l`), `/blog/#<slug>` is a post, an unknown slug is a "no such file" page. No router, no per-post HTML files.
+- `markdown.ts` (pure): Markdown subset to HTML. Headings `#`-`###` (marker kept, dimmed), paragraphs, `-`/`1.` lists, `>` quotes, fenced code drawn as a text box, `---`, inline `code`/`**bold**`/`*italic*`/`[link](url)`. All text is escaped first; only http(s), mailto, `/` and `#` links are made clickable.
+- `page.ts`: pure renderers (`renderIndex`, `renderPost`, `renderNotFound`, `statusLine`, `scrollFraction`, `parseRoute`) plus `mount(el)` for the DOM: hashchange, scroll, and keys `j/k/arrows` (scroll), `g/G` (top/bottom), `b/Esc` (back to the list); space and PageUp/PageDown scroll natively.
+- No-JS: the page only shows a "needs javascript" note. Rendering posts into `<noscript>` at build time is a possible follow-up.
