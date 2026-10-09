@@ -64,14 +64,12 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [ ] CRT scanline/glow toggle
 - [ ] Optional key-click sounds
 
-## Phase 6: Blog admin (needs a plan and a user decision on storage before any code)
-- [ ] `/admin/` page, protected by Pocket ID, to add, edit and delete blog posts: write in the browser (textarea with a live preview that uses the blog's own `renderMarkdown` and styles) or upload raw `.md` files. Notes from the first discussion:
-  - Where posts live after an edit is the big decision. A: the admin service commits the `.md` to the repo (fine-grained GitHub token, `contents:write`, limited to `src/features/blog/posts/`); the existing CI check + deploy publishes it in about a minute, git stays the single source of truth and CI rejects bad frontmatter (recommended). B: posts are files on the server and the blog fetches them at runtime (instant, but reverses the "bundled at build time" decision, posts leave git, RSS/post index must be generated server side).
-  - Needs a small backend (the Oracle task needs one too; share the container and Traefik setup). Pocket ID is OIDC, so Traefik forward auth (oauth2-proxy or tinyauth) must protect both `/admin/` and its API; the server re-validates every upload with the same `parsePost` rules (slug, date, size limit, `.md` only).
-  - Drafts: add `draft: true` to the frontmatter; drafts show in the admin list only, never in the public blog, home or RSS.
-  - Images are not supported by the Markdown subset yet; uploading assets will come up as soon as posts want pictures.
-  - Design: a normal shell page (`renderPage`, a `site.ts` entry), but private: add a `hidden` flag to the site map so it gets no status line window and no crumbs link. Listing like `ls -l ~/blog` with drafts marked, editor as `$ vim posts/<slug>.md`. Must work on a phone (writing from the couch is the point).
-  - Secrets (client id and secret, GitHub token) live in the server's environment, never in the repo.
+## Phase 6: Admin (hand-written, one shared admin with a module per feature; see DECISIONS.md)
+Needs a short plan shown in the terminal before any code. Storage is decided: option A, the admin commits to the repo.
+- [ ] 6a Admin infrastructure: one small backend service (the Oracle task can share its container and Traefik setup); Pocket ID (OIDC) forward auth on `/admin/` and `/api/` (oauth2-proxy or tinyauth in Traefik); a private `/admin/` shell page (`renderPage`, a `site.ts` entry with a new `hidden` flag so it gets no status line window and no public crumb link) that lists the modules like `ls modules/`; a service that commits files to the repo with a fine-grained GitHub token (`contents:write`, limited to the paths a module owns). Secrets (Pocket ID client id and secret, the GitHub token) live in the server's environment, never in the repo. Must work on a phone.
+- [ ] 6b Blog module (`src/features/blog/`, routes under `/api/blog/`): add, edit and delete posts; write in the browser (textarea with a live preview that uses the blog's own `renderMarkdown` and styles) or upload raw `.md` files. The server re-validates every upload with the same `parsePost` rules (slug, date, size limit, `.md` only) and commits to `src/features/blog/posts/`, so the existing CI check rejects bad posts and the deploy publishes in about a minute. Drafts via `draft: true` in the frontmatter (admin list only, never in the public blog, home or RSS). Listing like `ls -l ~/blog` with drafts marked; editor as `$ vim posts/<slug>.md`.
+- [ ] Later modules, same pattern: gallery (albums, uploads), Oracle controls. Pull shared code out of the blog module only when the second module arrives; do not design a framework from one example.
+- Open: images are not supported by the Markdown subset yet, so uploading assets will come up as soon as posts want pictures.
 
 ## Handoff log
 ### Session 1 (2026-10-02)
