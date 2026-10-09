@@ -64,6 +64,15 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [ ] CRT scanline/glow toggle
 - [ ] Optional key-click sounds
 
+## Phase 6: Blog admin (needs a plan and a user decision on storage before any code)
+- [ ] `/admin/` page, protected by Pocket ID, to add, edit and delete blog posts: write in the browser (textarea with a live preview that uses the blog's own `renderMarkdown` and styles) or upload raw `.md` files. Notes from the first discussion:
+  - Where posts live after an edit is the big decision. A: the admin service commits the `.md` to the repo (fine-grained GitHub token, `contents:write`, limited to `src/features/blog/posts/`); the existing CI check + deploy publishes it in about a minute, git stays the single source of truth and CI rejects bad frontmatter (recommended). B: posts are files on the server and the blog fetches them at runtime (instant, but reverses the "bundled at build time" decision, posts leave git, RSS/post index must be generated server side).
+  - Needs a small backend (the Oracle task needs one too; share the container and Traefik setup). Pocket ID is OIDC, so Traefik forward auth (oauth2-proxy or tinyauth) must protect both `/admin/` and its API; the server re-validates every upload with the same `parsePost` rules (slug, date, size limit, `.md` only).
+  - Drafts: add `draft: true` to the frontmatter; drafts show in the admin list only, never in the public blog, home or RSS.
+  - Images are not supported by the Markdown subset yet; uploading assets will come up as soon as posts want pictures.
+  - Design: a normal shell page (`renderPage`, a `site.ts` entry), but private: add a `hidden` flag to the site map so it gets no status line window and no crumbs link. Listing like `ls -l ~/blog` with drafts marked, editor as `$ vim posts/<slug>.md`. Must work on a phone (writing from the couch is the point).
+  - Secrets (client id and secret, GitHub token) live in the server's environment, never in the repo.
+
 ## Handoff log
 ### Session 1 (2026-10-02)
 - Done: Phase 0 foundation above (branch `chore/foundation`). `npm run check` passes.
