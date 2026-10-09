@@ -174,8 +174,33 @@ body.shell {
 .art {
     line-height: 1em;
     overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .name {
     color: var(--yellow);
+}
+
+/* The listing pattern (blog index, home sections, experiments): each row is one link, a full width tap target. */
+.row {
+    display: block;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.row:hover {
+    background: var(--bg-soft);
+}
+
+/* The fake permissions column is for wide screens; phones need the room for the title. */
+@media (max-width: 499px) {
+    .row .perm {
+        display: none;
+    }
+}
+
+/* A list is followed by the same gap as any block. */
+.row + p {
+    margin-top: 1.4em;
 }

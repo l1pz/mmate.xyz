@@ -31,7 +31,15 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [x] Step 4: blog card rows (kept as `date  title`, see DESIGN.md)
 - [x] Step 5: rules into `AGENTS.md` and `DECISIONS.md`
 
-## Phase 2b: Home page charm (the home grid should feel like a program, like the blog page)
+## Phase 2c: Consistency (DESIGN.md)
+- [x] Site map + page frame + `assertShell` guard
+- [x] Shared status line (windows, clock, progress) and keys on every page
+- [x] Blog index, post and not-found through the frame
+- [x] Home as a session; home cards, blog card, keynav and card windows removed (card engine kept)
+- [x] Experiments listing and the fluid dynamics page on the shell
+- [x] Guards: site map vs `vite.config.js`, built pages have the shell; docs updated
+
+## Phase 2b: Home page charm (done, then superseded: the home page is now a session, see Phase 2c; the card colors, window list and card keys it built were reworked or removed)
 - [x] Color pass: card titles yellow, borders gray, binary footers dim gray, accent colors on art (card engine style spans; `<noscript>` follows)
 - [x] tmux-style status bar on the home page: window list `1:about 2:projects 3:blog ...` (focused one marked) + live clock; shares its CSS with the blog status line
 - [x] Keyboard navigation: h/j/k/l or arrows move a highlight between cards (focused border turns yellow), Enter follows the card's first link, 1-5 jump to a card, Esc clears
@@ -110,3 +118,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ### Session 9b (2026-10-10)
 - Done: whole redesign in PR #14: #12 merged into the branch (and closed), phone rules, home page on the shell (`src/home.ts`, command-style card titles, whoami block), blog rows are full-width links, DESIGN.md/AGENTS.md/DECISIONS.md updated. Checked in the browser at desktop, 390px and 360px (narrow iframes; real phones and `pointer: coarse` still untested).
 - Next: user looks on a real phone; then Phase 2 "RSS feed script" or the parked home ideas (command prompt first).
+
+### Session 10 (2026-10-10)
+- Done (branch `feat/consistency`): every page (home, blog index/post/not found, experiments, fluid dynamics) goes through `renderPage` and one status line; home is a session; cards retired from pages (engine kept); guard tests added. Checked in the browser at desktop and 360px; real phones still untested.
+- Next: user looks; then Phase 2 "RSS feed script" (can also generate the post index the home page needs later) or the parked home ideas (command prompt first).

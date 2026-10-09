@@ -58,21 +58,3 @@ pre.code {
     overflow-x: auto;
     line-height: 1.3;
 }
-
-.row {
-    display: block;
-    text-decoration: none;
-    overflow-wrap: anywhere;
-    white-space: pre-wrap;
-}
-
-.row:hover {
-    background: var(--bg-soft);
-}
-
-/* The fake permissions column is for wide screens; phones need the room for the title. */
-@media (max-width: 499px) {
-    .row .perm {
-        display: none;
-    }
-}

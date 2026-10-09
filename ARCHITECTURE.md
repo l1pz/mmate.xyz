@@ -1,74 +1,69 @@
 # Architecture: 1000110.xyz
 
 ## Core idea
-A card is a fixed grid of characters (default 41 x 32), like a text-mode terminal screen. Pages are grids of cards.
-
-## Card engine (`src/card.ts`)
-Pure logic, fully tested (`tests/card.test.ts`). The only DOM touch is `render()`.
-- `new Card(cols, rows, title, draw)`: title on row 1, drawing starts at row 3.
-- `drawTextCentered(text, link?)`, `drawAsciiArtCentered(name)`, `drawBinaryTextCentered(text)`, `emptyLine(n)`: each draws at the current row and moves down.
-- `link = { href, label? }`: `label` is the part of the text that becomes the link.
-- `drawFooter(text)`: the hidden binary message, always the same 4 lines ending one blank row above the bottom row (rows 26-29 on a 32 row card), whatever the content above. Text is padded with spaces to 16 characters; longer text or content already in those rows throws `RangeError`. Use it for every card footer instead of counting `emptyLine`s.
-- Colors: every cell can carry a `CardStyle` (`title`, `border`, `dim`, `aqua`, `green`, `yellow`, `purple`, `red`). The title row is `title`, frame cells `border`, `drawFooter` text `dim`; `drawTextCentered(text, link?, style?)`, `drawAsciiArtCentered(name, style?)` and `drawBinaryTextCentered(text, style?)` take an optional style. `toHtml()` wraps runs in `<span class="c-NAME">` (colors in `styles/card.css`, theme variables only); `toString()` stays plain text. `linkTitle(href)` makes the title a link.
-- Drawing outside the grid throws `RangeError` (so overflow is a loud bug, not silent corruption). Columns are clipped.
-- `toString()` plain text, `toHtml()` escaped HTML with `<a>` tags, `render(el)` mounts a `<pre>`.
-- Optional 5th constructor argument `border` (a `BorderStyle` from `src/borders.ts`, or null/omitted for none). The frame is drawn after the content on rows 0, 2 and the last row plus the first/last column; if content already uses one of those cells it throws `RangeError`. Content area is therefore rows 3 to rows-2, cols 1 to cols-2 when a border is on.
+Every page is a terminal session built by one shared page frame (see `DESIGN.md`): crumbs, a man-page header, `$ command` prompt lines with their output, an end prompt with a blinking cursor, and a fixed status line. The site is a list of pages (`src/core/site.ts`); each page only writes its own body. The card engine (a fixed grid of characters) is kept as a tested widget toolkit, but no page uses cards right now.
 
 ## Files
 ```
-index.html, blog/index.html, experiments/**/index.html   pages (all listed in vite.config.js)
-src/ascii-art/                        ASCII art (.ascii), bundled at build time
-src/ascii.ts                            loads the bundled art
-src/core/html.ts                        escapeHtml (shared)
-src/core/shell.ts                       the shared page shell: crumbs, manHeader, promptLine, endPrompt (pure, return HTML)
-src/card.ts                             card engine
-src/borders.ts                          border styles (plain data; add a style = add an entry)
-src/cards.ts                            the home page cards (buildHomeCards, rounded border hardcoded; includes the blog card)
-src/home.ts                             home page shell around the cards (crumbs, man header, whoami, end prompt)
-plugins/noscript-cards.js               build/dev plugin: fills the <noscript> block of index.html with the home shell and buildHomeCards
-src/index.ts                            home page: renders the cards with the rounded border (hardcoded)
-src/keynav.ts                           home page keyboard navigation (pure: keyAction, moveFocus)
-src/statusbar.ts                        home page status line (window list + clock)
-styles/                                 reset, theme (Gruvbox variables), shell (shared page chrome), card layout, blog prose
+index.html, blog/index.html, experiments/**/index.html   pages (all listed in vite.config.js and in src/core/site.ts)
+src/core/site.ts                        the site map: pages as data (id, path, window name, section, pattern, parent, note), crumbTrail, windows
+src/core/shell.ts                       the page frame `renderPage` and its parts: crumbs, manHeader, promptLine, secretBlock, endPrompt, isoDate
+src/core/statusline.ts                  the shared status line: site windows, clock, scroll progress; mountStatusLine
+src/core/keys.ts                        the shared keys (1-9 windows, j/k, g/G, b/Esc) and bindKeys
+src/core/boot.ts                        bootPage (status line + keys) and mountPage (frame around one block, for tools)
+src/core/html.ts, binary.ts             escapeHtml; binaryLines (hidden messages)
+src/home.ts, src/index.ts               the home page (a session of commands); entry
+src/experiments-page.ts, src/experiments.ts   the experiments listing; entry
+src/features/blog/                      blog: loader, markdown, page (index, post, not found), rows (see below)
+src/blog.ts                             blog entry
+plugins/noscript-home.js                build/dev plugin: fills the <noscript> block of index.html with renderHome
+src/card.ts, borders.ts, ascii.ts       card engine (toolkit, unused by pages for now), border styles, bundled ASCII art
+src/ascii-art/                          ASCII art (.ascii), bundled at build time
+styles/                                 reset, theme (Gruvbox variables, fluid font), shell (frame, status line, listing rows, art), blog (prose), card (engine colors), experiment
 public/fonts/                           self-hosted fonts (DejaVu Sans Mono + JGS pixel fonts), copied as-is to dist/fonts
-tests/                                  vitest: card engine, borders, home cards in every border style, production-build guard
+tests/                                  vitest; tests/helpers/shell.ts has assertShell; build.test.ts is the production-build guard
 ```
 
-## No-JS version
-`index.html` has `<!-- noscript-cards -->` inside `<noscript>`. `plugins/noscript-cards.js` (listed in `vite.config.js`) replaces it with the home shell (`renderHomeHead`/`renderHomeEnd` from `src/home.ts`) around `card.toHtml()` of every card from `buildHomeCards()`, loaded through Vite so `import.meta.glob` works. Never edit noscript cards by hand: change `src/cards.ts` and both versions follow. Build time values (the age line, the random art piece) are fixed per build. `tests/build.test.ts` checks the generated output.
+## The page frame and the site map
+- `renderPage({ page, command, body, date, trail?, name?, secret? })` outputs, always in this order: crumbs, man header, `$ command`, body, optional secret, end prompt. Page code only writes `body`; a page cannot leave a part out.
+- `pages` in `site.ts` is the single list of pages. The status line windows (`1:home 2:blog 3:exp`), crumbs and man header all come from it. A new page = one entry there plus its HTML file in `vite.config.js`; `tests/pages.test.ts` fails if the two disagree, and `tests/build.test.ts` checks every built page has `body.shell`, a status line mount, the phone viewport and a `<noscript>`.
+- Tests of every page renderer call `assertShell(html)` (parts present, in order, end prompt last).
+- Hidden messages: `secretBlock(text)` is a dim, aria-hidden binary block (4 bytes per line); pass `secret` to `renderPage` or call it per section. Posts can set `secret:` in their frontmatter (at most 32 characters).
 
-## Layout
-CSS grid, 1 column (<750px), 2 (750-1099), 3 (1100-1499), 4 (>=1500). All cards are the same size.
+## Status line and keys (every page)
+- `statusline.ts`: left, the site windows as links (current page highlighted with `*`, a child page keeps its parent's window); right, `HH:MM [████░░░░] 42%`. CSS hides the clock under 600px and the bar under 500px.
+- `keys.ts`: `1`-`9` go to site window N, `j`/`k` scroll, `g`/`G` top and bottom, `b`/Esc go up (a blog post goes back to the list; otherwise the parent page, or home). Space, PageUp/PageDown and the arrows scroll natively.
 
-## Feature modules (APPROVED 2026-10-02; only `blog` exists so far: loader and home card)
+## Phone rules in code
+- `--font-size` in `theme.css` is `min(14px, (100vw - 16px) / 26.49)`, so 44 columns (41 of content plus the page gutters) always fit a phone.
+- Status line: `viewport-fit=cover` plus `env(safe-area-inset-bottom)` padding; on touch screens (`pointer: coarse`) windows, crumbs and listing rows are at least 44px tall.
+- Art blocks keep tight spacing and scroll sideways rather than overflow.
+
+## Home page (`src/home.ts`)
+The "session" pattern: `whoami`, `cat portrait.txt`, `ls ~/blog` (newest 5 posts, same rows as the blog index), `ls projects/`, `cat contact.txt`, `echo "l'art pour l'art"` (a random art piece, picked by `initAscii()`). Hidden binary messages sit under the portrait, projects and contact sections. `plugins/noscript-home.js` renders the same `renderHome` into `<noscript>` at build time (the age and the art piece are fixed per build); never edit that copy by hand.
+
+## Feature modules (APPROVED 2026-10-02)
 Each feature (blog, tools, gallery, oracle) is a folder `src/features/<name>/` exporting one object:
 ```ts
 export default {
   id: "blog",
-  card(width, height): Card,        // the tile on the home grid
-  page?: { path: "/blog/", mount(el) }   // optional full-page view
+  page: { path: "/blog/", mount(el) }   // the full-page view
 }
 ```
-`src/index.ts` just imports the list of features and renders their cards. Features never import each other; shared code goes in `src/core/`. This keeps each AI session inside one folder.
+Features never import each other; shared code goes in `src/core/`. This keeps each AI session inside one folder. (A feature may also offer a card widget later, using the card engine.)
 
-### Blog loader (`src/features/blog/`)
-`frontmatter.ts` (pure parser/validator: `parseFrontmatter`, `parsePost`), `posts.ts` (`loadPosts`, `getPosts()` newest first, `getPost(slug)`), `posts/*.md` (title, date `YYYY-MM-DD`, optional `tags: [a, b]`, optional `slug`, defaulting to the filename). Bad frontmatter or a duplicate slug throws at load time. 
-`index.ts` is the feature object: `card()` builds the home tile (`buildBlogCard`: newest 5 posts, typewriter art on top, one row each, titles truncated, rows link to `/blog/#slug`, "no posts yet" when empty). Also exports `page: { path: "/blog/", mount }` (the reader, imported lazily). `buildHomeCards` calls `blog.card()` directly; `src/index.ts` does not iterate a features list until a second feature exists.
-
-### Blog reader (`/blog/`, `src/blog.ts`, `styles/blog.css`)
-Cards are for the home grid and widgets. Posts are read on a normal page styled as a pager: native scrolling, a 72ch column, real HTML (clickable links, selectable text), a fixed status line at the bottom with the progress meter (`name  [████░░░░] 42%`).
-- Routing by hash: `/blog/` is the list (drawn like `ls -l`), `/blog/#<slug>` is a post, an unknown slug is a "no such file" page. No router, no per-post HTML files.
+### Blog (`src/features/blog/`)
+- `frontmatter.ts` (pure parser/validator: `parseFrontmatter`, `parsePost`), `posts.ts` (`loadPosts`, `getPosts()` newest first, `getPost(slug)`), `posts/*.md` (title, date `YYYY-MM-DD`, optional `tags: [a, b]`, `slug`, `secret`). Bad frontmatter or a duplicate slug throws at load time.
+- `rows.ts`: the `ls -l`-style rows, shared by the blog index and the home page. Each row is one link.
 - `markdown.ts` (pure): Markdown subset to HTML. Headings `#`-`###` (marker kept, dimmed), paragraphs, `-`/`1.` lists, `>` quotes, fenced code drawn as a text box, `---`, inline `code`/`**bold**`/`*italic*`/`[link](url)`. All text is escaped first; only http(s), mailto, `/` and `#` links are made clickable.
-- `page.ts`: pure renderers (`renderIndex`, `renderPost`, `renderNotFound`, `statusLine`, `scrollFraction`, `parseRoute`) plus `mount(el)` for the DOM: hashchange, scroll, and keys `j/k/arrows` (scroll), `g/G` (top/bottom), `b/Esc` (back to the list); space and PageUp/PageDown scroll natively.
+- `page.ts`: renderers (`renderIndex`, `renderPost`, `renderNotFound`, all through `renderPage`) and `mount(el)`. Routing by hash: `/blog/` is the list, `/blog/#<slug>` a post, an unknown slug a "no such file" page. No router, no per-post HTML files.
 - No-JS: the page only shows a "needs javascript" note. Rendering posts into `<noscript>` at build time is a possible follow-up.
+- Known cost: the home page imports `posts.ts`, so every post body is in the home bundle. Fine for a few posts; replace with a generated post index (the RSS task will produce one) when the blog grows.
 
-## Shell (see DESIGN.md)
-Every page shares one shell. `src/core/shell.ts` builds its parts as HTML strings (`crumbs`, `manHeader`, `promptLine`, `endPrompt`) and `styles/shell.css` styles them (`body.shell`, `.page` column, `.crumbs`, `.man`, `.prompt`, `.dim`, `.cursor`, the fixed `#status` line). New pages use these helpers instead of hand-writing chrome; page-specific styles stay in their own file (`blog.css`).
-
-### Home page chrome (`src/index.ts`)
-- Status line (`#status`, fixed at the bottom, `src/statusbar.ts`): tmux-style window list `1:about 2:projects 3:blog ...` (one window per card; the focused one is yellow with a `*`; clicking one focuses it) and a `HH:MM` clock.
-- Keyboard (`src/keynav.ts`): `h/j/k/l` move a highlight between cards by real position (works with 1-4 columns), arrow keys do the same once a card is focused (before that they scroll as usual), `1`-`5` jump, `Enter` follows the focused card's first link, `Esc` clears. The focused card gets the `focused` class, which turns its border yellow. Nothing is focused until the first key, so mouse and touch users see no change.
-
-### Phone rules in code
-- `--font-size` in `theme.css` is `min(14px, (100vw - 16px) / 24.68)`, so 41 columns always fit a phone; the card grid is `repeat(var(--cols), 41ch)` with `--cols` 1/2/3/4 at 750/1100/1500px, and `.home` is exactly as wide as the grid.
-- Status line: `viewport-fit=cover` plus `env(safe-area-inset-bottom)` padding; window names have a `long` and a `short` span (CSS shows `short` under 500px); the clock hides under 600px; on touch screens (`pointer: coarse`) windows, crumbs and blog rows are at least 44px tall.
+## Card engine (`src/card.ts`, kept as a toolkit)
+Pure logic, fully tested (`tests/card.test.ts`). The only DOM touch is `render()`. Cards are for future widgets (a table of contents, the Oracle, a clock), not for pages.
+- `new Card(cols, rows, title, draw, border?)`: title on row 1, drawing starts at row 3. A title starting with `$ ` gets a dim prompt.
+- `drawTextCentered(text, link?, style?)`, `drawAsciiArtCentered(name, style?)`, `drawBinaryTextCentered(text, style?)`, `emptyLine(n)`: each draws at the current row and moves down. `link = { href, label? }`.
+- `drawFooter(text)`: the hidden binary message, 4 lines ending one blank row above the bottom row, padded to 16 characters.
+- Colors: every cell can carry a `CardStyle` (`title`, `border`, `dim`, `aqua`, `green`, `yellow`, `purple`, `red`); `toHtml()` wraps runs in `<span class="c-NAME">` (colors in `styles/card.css`); `linkTitle(href)` makes the title a link.
+- Drawing outside the grid throws `RangeError`. `toString()` is plain text, `toHtml()` escaped HTML, `render(el)` mounts a `<pre>`. An optional `border` (from `src/borders.ts`) is drawn after the content and throws if content overlaps it.
