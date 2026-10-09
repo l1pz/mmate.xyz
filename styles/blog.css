@@ -1,59 +1,6 @@
-/* The blog is a pager, not a card: native scrolling, a column of text, a status line at the bottom. */
-html {
-    line-height: 1.6 !important;
-    user-select: text;
-}
-
-body {
-    display: block;
-}
-
-#blog main {
-    width: min(72ch, 100%);
-    margin: 0 auto;
-    padding: 1.5em 1.5ch 6em;
-}
-
-#blog p,
-#blog pre,
-#blog ul,
-#blog ol,
-#blog blockquote,
-#blog hr {
-    margin: 0 0 1.4em;
-}
-
-.dim,
-.mark,
-.crumbs {
+/* Blog-only styles: the markdown prose and the post list. The shell (crumbs, prompts, status line) is in shell.css. */
+.mark {
     color: var(--gray);
-}
-
-.crumbs {
-    margin-bottom: 2em;
-}
-
-.prompt {
-    color: var(--green);
-}
-
-.error {
-    color: var(--red);
-}
-
-.man {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1.4em;
-    padding-bottom: 0.4em;
-    border-bottom: 1px dashed var(--gray);
-    color: var(--gray);
-}
-
-.title {
-    margin-bottom: 0.4em;
-    color: var(--yellow);
-    font-size: inherit;
 }
 
 article h1,
@@ -113,39 +60,19 @@ pre.code {
 }
 
 .row {
+    display: block;
+    text-decoration: none;
     overflow-wrap: anywhere;
     white-space: pre-wrap;
 }
 
-.cursor {
-    display: inline-block;
-    width: 1ch;
-    height: 1.1em;
-    background: var(--fg);
-    vertical-align: text-bottom;
-    animation: blink 1s steps(1) infinite;
-}
-
-@keyframes blink {
-    50% {
-        opacity: 0;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .cursor {
-        animation: none;
-    }
-}
-
-#status {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    padding: 0.5em 1.5ch;
+.row:hover {
     background: var(--bg-soft);
-    color: var(--yellow);
-    white-space: pre;
-    overflow: hidden;
+}
+
+/* The fake permissions column is for wide screens; phones need the room for the title. */
+@media (max-width: 499px) {
+    .row .perm {
+        display: none;
+    }
 }

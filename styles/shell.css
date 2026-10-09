@@ -1,0 +1,185 @@
+/* The shell every page shares (DESIGN.md): crumbs, man header, prompt lines, cursor, status line. */
+body.shell {
+    display: block;
+    line-height: 1.6;
+    user-select: text;
+}
+
+/* The home page: as wide as its card grid, header text lines up with the first card. */
+.home {
+    box-sizing: content-box;
+    width: calc(var(--cols) * 41ch + (var(--cols) - 1) * 2ch);
+    max-width: calc(100% - 16px);
+    margin: 0 auto;
+    padding: 1.5em 8px 2em;
+}
+
+.home p {
+    margin: 0 0 1.4em;
+}
+
+.home .card-container {
+    margin-bottom: 1.4em;
+}
+
+.name {
+    color: var(--yellow);
+}
+
+/* A column of shell content. Cards do not live in here (they keep their own tight spacing). */
+.page {
+    width: min(72ch, 100%);
+    margin: 0 auto;
+    padding: 1.5em 1.5ch 6em;
+}
+
+.page p,
+.page pre,
+.page ul,
+.page ol,
+.page blockquote,
+.page hr {
+    margin: 0 0 1.4em;
+}
+
+.dim,
+.crumbs {
+    color: var(--gray);
+}
+
+.crumbs {
+    margin-bottom: 2em;
+}
+
+.prompt {
+    color: var(--green);
+}
+
+.error {
+    color: var(--red);
+}
+
+.man {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.4em;
+    padding-bottom: 0.4em;
+    border-bottom: 1px dashed var(--gray);
+    color: var(--gray);
+}
+
+.title {
+    margin-bottom: 0.4em;
+    color: var(--yellow);
+    font-size: inherit;
+}
+
+.cursor {
+    display: inline-block;
+    width: 1ch;
+    height: 1.1em;
+    background: var(--fg);
+    vertical-align: text-bottom;
+    animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cursor {
+        animation: none;
+    }
+}
+
+/* The fixed status line at the bottom (tmux / vim style): where you are on the left, state on the right. */
+body.shell {
+    padding-bottom: calc(3em + env(safe-area-inset-bottom, 0px));
+}
+
+#status {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 2ch;
+    padding: 0.5em 1.5ch calc(0.5em + env(safe-area-inset-bottom, 0px));
+    background: var(--bg-soft);
+    color: var(--yellow);
+    white-space: pre;
+    overflow: hidden;
+}
+
+/* Without JavaScript the bar stays empty, so do not show it. */
+#status:empty {
+    display: none;
+}
+
+#status .win:link,
+#status .win:visited {
+    color: var(--fg);
+    text-decoration: none;
+}
+
+#status .win.active {
+    background: var(--yellow);
+    color: var(--bg);
+}
+
+#clock {
+    color: var(--gray);
+}
+
+/* Window names: long on wide screens, short on phones so the list fits in 40 columns. */
+#status .win .short {
+    display: none;
+}
+
+@media (max-width: 499px) {
+    #status .win .long {
+        display: none;
+    }
+
+    #status .win .short {
+        display: inline;
+    }
+}
+
+@media (max-width: 599px) {
+    #clock {
+        display: none;
+    }
+}
+
+/* Touch screens: every tap target is at least 44px tall. */
+@media (pointer: coarse) {
+    #status {
+        padding-top: 0;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    #windows {
+        display: flex;
+    }
+
+    #status .win {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 0.6ch;
+    }
+
+    .crumbs a {
+        display: inline-block;
+        padding: 0.6em 0;
+    }
+
+    .row {
+        padding: 0.6em 0;
+    }
+}

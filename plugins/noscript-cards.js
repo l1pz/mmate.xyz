@@ -13,10 +13,12 @@ export default function noscriptCards() {
     const render = async (server) => {
         const { initAscii } = await server.ssrLoadModule("/src/ascii.ts");
         const { buildHomeCards } = await server.ssrLoadModule("/src/cards.ts");
+        const { renderHomeHead, renderHomeEnd } = await server.ssrLoadModule("/src/home.ts");
         initAscii();
-        return Object.entries(buildHomeCards())
+        const cards = Object.entries(buildHomeCards())
             .map(([id, card]) => `<div class="card" id="${id}">\n<pre>\n${card.toHtml()}</pre>\n</div>`)
             .join("\n");
+        return `${renderHomeHead(new Date())}\n<div class="card-container">\n${cards}\n</div>\n${renderHomeEnd()}`;
     };
 
     return {

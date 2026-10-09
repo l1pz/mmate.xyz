@@ -1,6 +1,8 @@
 # Design system: 1000110.xyz
 
-STATUS: APPROVED 2026-10-10 (direction and implementation order). Open questions below default to the first option until the user has seen the result on a phone.
+STATUS: IMPLEMENTED 2026-10-10 (steps 1-5 below, PR #14). Open questions below keep their defaults until the user has seen the result on a phone.
+
+Deviations from the first proposal: the `whoami` block says something new ("this is my cyberdeck: ...") instead of moving the about card's text, so the about card is unchanged; the blog card keeps the `date  title` rows because a full `ls -l` row does not fit in 39 columns (the blog index drops its fake permissions column under 500px for the same reason).
 
 Every page is a terminal session. Pages share one shell (the frame) and serve their own content inside it. Phones come first: most visitors arrive on one.
 
@@ -70,7 +72,7 @@ The short introduction moves from the about card into the `whoami` block; the ab
 1. `styles/shell.css` + `src/shell.ts`: crumbs, man header, prompt, end prompt; the blog is refactored to use them (no visual change).
 2. Phone rules: fluid font size, safe area, tap targets, short window names; check at 360 and 390 wide.
 3. Home page gets the shell, the `whoami` block and command-style card titles.
-4. Blog card uses the `ls -l` row format.
+4. Blog card rows: kept as `date  title` (see deviations above).
 5. Record the rules in `AGENTS.md` ("new pages use the shell in DESIGN.md") and add decisions to `DECISIONS.md`.
 Each step is its own commit and is reviewable on its own.
 

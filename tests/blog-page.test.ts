@@ -65,7 +65,7 @@ describe("wordCount", () => {
 describe("renderIndex", () => {
     it("lists every post as a link to its hash, escaped", () => {
         const html = renderIndex([post()]);
-        expect(html).toContain('href="#a-post"');
+        expect(html).toContain('<a class="row" href="#a-post">');
         expect(html).toContain("A &lt;b&gt; title");
         expect(html).toContain("total 1");
         expect(html).not.toContain("<b>");

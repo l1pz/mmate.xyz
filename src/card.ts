@@ -14,6 +14,9 @@ interface PlacedLink {
     href: string;
 }
 
+/** Color of a run of cells: becomes `<span class="c-NAME">`, colored by `styles/card.css`. */
+export type CardStyle = "title" | "border" | "dim" | "aqua" | "green" | "yellow" | "purple" | "red";
+
 const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 /** Lines in the binary footer block (see `drawFooter`). */
@@ -25,6 +28,7 @@ export default class Card {
     readonly rows: number;
     #title: string;
     #canvas: string[][];
+    #styles: (CardStyle | null)[][];
     #currentRow = 3;
     #links: PlacedLink[] = [];
 
@@ -33,7 +37,9 @@ export default class Card {
         this.rows = rows;
         this.#title = title;
         this.#canvas = Array.from({ length: rows }, () => new Array<string>(cols).fill(" "));
-        this.#drawText(this.#title, this.#centerCol(this.#title), 1);
+        this.#styles = Array.from({ length: rows }, () => new Array<CardStyle | null>(cols).fill(null));
+        this.#drawText(this.#title, this.#centerCol(this.#title), 1, "title");
+        if (title.startsWith("$ ")) this.#styles[1][this.#centerCol(title)] = "dim"; // a command title: dim prompt
         draw(this);
         if (border) this.#drawFrame(border);
     }
@@ -42,44 +48,61 @@ export default class Card {
         return this.#canvas.map((row) => row.join("")).join("\n") + "\n";
     }
 
-    /** HTML for the card: text is escaped and links are real <a> tags. */
+    /** HTML for the card: text is escaped, links are real <a> tags and colored runs are `<span class="c-NAME">`. */
     toHtml(): string {
         return (
             this.#canvas
                 .map((cells, row) => {
+                    // Text between `from` and `to` (no links inside), grouped into runs of one style.
+                    const runs = (from: number, to: number) => {
+                        let html = "";
+                        for (let col = from; col < to; ) {
+                            const style = this.#styles[row][col];
+                            let end = col + 1;
+                            while (end < to && this.#styles[row][end] === style) end++;
+                            const text = escapeHtml(cells.slice(col, end).join(""));
+                            html += style ? `<span class="c-${style}">${text}</span>` : text;
+                            col = end;
+                        }
+                        return html;
+                    };
                     const links = this.#links.filter((l) => l.row === row).sort((a, b) => a.col - b.col);
                     let html = "";
                     let col = 0;
                     for (const link of links) {
-                        html += escapeHtml(cells.slice(col, link.col).join(""));
-                        const label = escapeHtml(cells.slice(link.col, link.col + link.length).join(""));
-                        html += `<a href="${link.href}">${label}</a>`;
+                        html += runs(col, link.col);
+                        html += `<a href="${link.href}">${runs(link.col, link.col + link.length)}</a>`;
                         col = link.col + link.length;
                     }
-                    return html + escapeHtml(cells.slice(col).join(""));
+                    return html + runs(col, this.cols);
                 })
                 .join("\n") + "\n"
         );
+    }
+
+    /** Makes the card title a link (the title row is row 1). */
+    linkTitle(href: string): void {
+        this.#links.push({ row: 1, col: this.#centerCol(this.#title), length: this.#title.length, href });
     }
 
     emptyLine(n = 1): void {
         this.#currentRow += n;
     }
 
-    drawAsciiArtCentered(name: string): void {
+    drawAsciiArtCentered(name: string, style?: CardStyle): void {
         const art = ascii[name];
         if (art === undefined) throw new Error(`Unknown ASCII art "${name}"`);
         const lines = art.split("\n");
         const maxLineLength = Math.max(...lines.map((line) => line.length));
         const col = Math.floor(this.cols / 2) - Math.floor(maxLineLength / 2);
         for (const line of lines) {
-            this.#drawText(line, col, this.#currentRow++);
+            this.#drawText(line, col, this.#currentRow++, style);
         }
     }
 
-    drawTextCentered(text: string, link?: Link): void {
+    drawTextCentered(text: string, link?: Link, style?: CardStyle): void {
         const col = this.#centerCol(text);
-        this.#drawText(text, col, this.#currentRow);
+        this.#drawText(text, col, this.#currentRow, style);
         if (link) {
             const label = link.label ?? text;
             const start = text.indexOf(label);
@@ -89,12 +112,12 @@ export default class Card {
         this.#currentRow++;
     }
 
-    drawBinaryTextCentered(text: string): void {
+    drawBinaryTextCentered(text: string, style?: CardStyle): void {
         const perLine = Math.floor(this.cols / 9);
         text = text.padEnd(Math.ceil(text.length / perLine) * perLine, " ");
         const bytes = Array.from(text, (c) => c.charCodeAt(0).toString(2).padStart(8, "0"));
         for (let i = 0; i < bytes.length; i += perLine) {
-            this.drawTextCentered(bytes.slice(i, i + perLine).join(" "));
+            this.drawTextCentered(bytes.slice(i, i + perLine).join(" "), undefined, style);
         }
     }
 
@@ -117,7 +140,7 @@ export default class Card {
             }
         }
         this.#currentRow = first;
-        this.drawBinaryTextCentered(text.padEnd(max));
+        this.drawBinaryTextCentered(text.padEnd(max), "dim");
     }
 
     render(parent: Element): void {
@@ -142,6 +165,7 @@ export default class Card {
                 throw new RangeError(`Card "${this.#title}": content overlaps the border at row ${row}, col ${col}`);
             }
             this.#canvas[row][col] = c;
+            this.#styles[row][col] = "border";
         };
         for (let row = 0; row <= bottom; row++) {
             const isLine = row === 0 || row === 2 || row === bottom;
@@ -153,13 +177,16 @@ export default class Card {
         }
     }
 
-    #drawText(text: string, col: number, row: number): void {
+    #drawText(text: string, col: number, row: number, style?: CardStyle): void {
         if (row < 0 || row >= this.rows) {
             throw new RangeError(`Card "${this.#title}": row ${row} is outside the ${this.rows} row grid`);
         }
         for (let i = 0; i < text.length; i++) {
             const c = col + i;
-            if (c >= 0 && c < this.cols) this.#canvas[row][c] = text[i];
+            if (c >= 0 && c < this.cols) {
+                this.#canvas[row][c] = text[i];
+                this.#styles[row][c] = style ?? null;
+            }
         }
     }
 }

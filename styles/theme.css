@@ -9,7 +9,8 @@
     --red: #fb4934;
     --gray: #928374;
     --bg-soft: #3c3836;
-    --font-size: 14px;
+    /* 14px, shrinking on narrow phones so 41 columns always fit: (viewport - 16px gutters) / (41 * 0.602) */
+    --font-size: min(14px, calc((100vw - 16px) / 24.68));
     --font: "DejaVu Sans Mono", monospace !important;
 }
 
