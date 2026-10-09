@@ -24,6 +24,17 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [x] TUI reading view with progress meter (pager-style page, not a card; see DECISIONS.md)
 - [ ] RSS feed script
 
+## Phase 2b: Home page charm (the home grid should feel like a program, like the blog page)
+- [x] Color pass: card titles yellow, borders gray, binary footers dim gray, accent colors on art (card engine style spans; `<noscript>` follows)
+- [x] tmux-style status bar on the home page: window list `1:about 2:projects 3:blog ...` (focused one marked) + live clock; shares its CSS with the blog status line
+- [x] Keyboard navigation: h/j/k/l or arrows move a highlight between cards (focused border turns yellow), Enter follows the card's first link, 1-5 jump to a card, Esc clears
+
+### Home page ideas (parked, in rough priority; user liked all of them)
+- Command prompt `$ _` on the home page: `help`, `ls`, `blog`, `cat about`, `theme`; the place for easter eggs (`sudo`, `xyzzy`, `rm -rf /`, random `fortune` line)
+- Boot sequence on the first visit per session: a few typed lines (`1000110.xyz cyberdeck v0.1 ... ok`), then the cards print in; skippable with any key; keep it short
+- Living cards: clock, a "now" card (building / listening), the typewriter typing a line, animated art; the Oracle is the big version
+- Later, on the blog: table-of-contents widget card beside a post (wide screens), build-time `<noscript>` posts
+
 ## Phase 3: Tools
 - [ ] Binary / Base64 / Hex / ROT13 playground
 - [ ] Image to ASCII / dither studio
@@ -84,3 +95,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 ### Session 9 (2026-10-10)
 - Done: DESIGN.md approved and merged (PR #13); design system step 1 (branch `feat/shell`): `src/core/{html,shell}.ts`, `styles/shell.css`, blog refactored onto them with no visual change (checked in the browser). PR #12 (home charm) is still open and waits for the rebase in step 3; it has its own `styles/status.css` which must be folded into `shell.css`.
 - Next: step 2, phone rules.
+
+### Session 8 (2026-10-09)
+- Done: home page charm 1-3 (branch `feat/home-charm`): card color styles, tmux-style status bar with clock, h/j/k/l + number-key navigation with a yellow focus border. Ideas 4-6 stay parked in this file. Not yet eyeballed by the user.
+- Next: user looks at the home page; then Phase 2 "RSS feed script" or the parked home ideas (command prompt first).

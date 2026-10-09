@@ -68,6 +68,41 @@ describe("Card", () => {
         );
     });
 
+    describe("colors", () => {
+        it("styles the title, and wraps only styled runs in spans", () => {
+            const html = new Card(11, 6, "hi", () => {}).toHtml().split("\n");
+            expect(html[1]).toBe('    <span class="c-title">hi</span>     ');
+            expect(html[3]).toBe("           "); // unstyled rows stay plain
+        });
+
+        it("applies a style to text and art", () => {
+            const html = new Card(11, 8, "t", (c) => {
+                c.drawTextCentered("ab", undefined, "aqua");
+                c.drawAsciiArtCentered("tiny", "red");
+            }).toHtml();
+            expect(html).toContain('<span class="c-aqua">ab</span>');
+            expect(html).toContain('<span class="c-red">ab</span>');
+        });
+
+        it("colors the border cells and the footer, never changing the plain text", () => {
+            const plain = new Card(41, 32, "t", (c) => c.drawFooter("hi"), borders.rounded);
+            const html = plain.toHtml();
+            expect(html).toContain('<span class="c-border">╭');
+            expect(html).toContain('<span class="c-dim">01101000');
+            expect(html.replace(/<[^>]+>/g, "")).toBe(plain.toString());
+        });
+
+        it("keeps a link inside its colored run", () => {
+            const html = new Card(20, 6, "t", (c) => c.drawTextCentered("go home", { href: "/" }, "green")).toHtml();
+            expect(html).toContain('<a href="/"><span class="c-green">go home</span></a>');
+        });
+
+        it("makes the title a link", () => {
+            const html = new Card(20, 6, "blog", (c) => c.linkTitle("/blog/")).toHtml();
+            expect(html).toContain('<a href="/blog/"><span class="c-title">blog</span></a>');
+        });
+    });
+
     describe("drawFooter", () => {
         const rows = (card: Card) => card.toString().split("\n");
 

@@ -74,15 +74,42 @@ body.shell {
     }
 }
 
-/* The fixed status line at the bottom. */
+/* The fixed status line at the bottom (tmux / vim style): where you are on the left, state on the right. */
+body.shell {
+    padding-bottom: 3em;
+}
+
 #status {
     position: fixed;
     right: 0;
     bottom: 0;
     left: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 2ch;
     padding: 0.5em 1.5ch;
     background: var(--bg-soft);
     color: var(--yellow);
     white-space: pre;
     overflow: hidden;
+}
+
+/* Without JavaScript the bar stays empty, so do not show it. */
+#status:empty {
+    display: none;
+}
+
+#status .win:link,
+#status .win:visited {
+    color: var(--fg);
+    text-decoration: none;
+}
+
+#status .win.active {
+    background: var(--yellow);
+    color: var(--bg);
+}
+
+#clock {
+    color: var(--gray);
 }

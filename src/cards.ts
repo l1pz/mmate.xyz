@@ -14,7 +14,7 @@ export function buildHomeCards(border: BorderStyle | null = borders.rounded): Re
     return {
         aboutme: make("about me", (card) => {
             card.emptyLine(2);
-            card.drawAsciiArtCentered("portrait");
+            card.drawAsciiArtCentered("portrait", "aqua");
             card.emptyLine(2);
             card.drawTextCentered("máté molnár");
             card.emptyLine(1);
@@ -26,7 +26,7 @@ export function buildHomeCards(border: BorderStyle | null = borders.rounded): Re
             card.drawFooter("i'm proud of you");
         }),
         projects: make("projects", (card) => {
-            card.drawAsciiArtCentered("escher");
+            card.drawAsciiArtCentered("escher", "purple");
             card.emptyLine(3);
             card.drawTextCentered("github", { href: "https://github.com/l1pz/" });
             card.emptyLine(1);
@@ -35,7 +35,7 @@ export function buildHomeCards(border: BorderStyle | null = borders.rounded): Re
         }),
         blog: blog.card(CARD_WIDTH, CARD_HEIGHT, border),
         contact: make("contact", (card) => {
-            card.drawAsciiArtCentered("phone");
+            card.drawAsciiArtCentered("phone", "green");
             card.emptyLine(1);
             card.drawTextCentered("phone: +36 xx xxx xxxx");
             card.emptyLine(1);

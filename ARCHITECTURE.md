@@ -9,6 +9,7 @@ Pure logic, fully tested (`tests/card.test.ts`). The only DOM touch is `render()
 - `drawTextCentered(text, link?)`, `drawAsciiArtCentered(name)`, `drawBinaryTextCentered(text)`, `emptyLine(n)`: each draws at the current row and moves down.
 - `link = { href, label? }`: `label` is the part of the text that becomes the link.
 - `drawFooter(text)`: the hidden binary message, always the same 4 lines ending one blank row above the bottom row (rows 26-29 on a 32 row card), whatever the content above. Text is padded with spaces to 16 characters; longer text or content already in those rows throws `RangeError`. Use it for every card footer instead of counting `emptyLine`s.
+- Colors: every cell can carry a `CardStyle` (`title`, `border`, `dim`, `aqua`, `green`, `yellow`, `purple`, `red`). The title row is `title`, frame cells `border`, `drawFooter` text `dim`; `drawTextCentered(text, link?, style?)`, `drawAsciiArtCentered(name, style?)` and `drawBinaryTextCentered(text, style?)` take an optional style. `toHtml()` wraps runs in `<span class="c-NAME">` (colors in `styles/card.css`, theme variables only); `toString()` stays plain text. `linkTitle(href)` makes the title a link.
 - Drawing outside the grid throws `RangeError` (so overflow is a loud bug, not silent corruption). Columns are clipped.
 - `toString()` plain text, `toHtml()` escaped HTML with `<a>` tags, `render(el)` mounts a `<pre>`.
 - Optional 5th constructor argument `border` (a `BorderStyle` from `src/borders.ts`, or null/omitted for none). The frame is drawn after the content on rows 0, 2 and the last row plus the first/last column; if content already uses one of those cells it throws `RangeError`. Content area is therefore rows 3 to rows-2, cols 1 to cols-2 when a border is on.
@@ -25,6 +26,8 @@ src/borders.ts                          border styles (plain data; add a style =
 src/cards.ts                            the home page cards (buildHomeCards, rounded border hardcoded; includes the blog card)
 plugins/noscript-cards.js               build/dev plugin: fills the <noscript> block of index.html from buildHomeCards
 src/index.ts                            home page: renders the cards with the rounded border (hardcoded)
+src/keynav.ts                           home page keyboard navigation (pure: keyAction, moveFocus)
+src/statusbar.ts                        home page status line (window list + clock)
 styles/                                 reset, theme (Gruvbox variables), shell (shared page chrome), card layout, blog prose
 public/fonts/                           self-hosted fonts (DejaVu Sans Mono + JGS pixel fonts), copied as-is to dist/fonts
 tests/                                  vitest: card engine, borders, home cards in every border style, production-build guard
@@ -60,3 +63,7 @@ Cards are for the home grid and widgets. Posts are read on a normal page styled 
 
 ## Shell (see DESIGN.md)
 Every page shares one shell. `src/core/shell.ts` builds its parts as HTML strings (`crumbs`, `manHeader`, `promptLine`, `endPrompt`) and `styles/shell.css` styles them (`body.shell`, `.page` column, `.crumbs`, `.man`, `.prompt`, `.dim`, `.cursor`, the fixed `#status` line). New pages use these helpers instead of hand-writing chrome; page-specific styles stay in their own file (`blog.css`).
+
+### Home page chrome (`src/index.ts`)
+- Status line (`#status`, fixed at the bottom, `src/statusbar.ts`): tmux-style window list `1:about 2:projects 3:blog ...` (one window per card; the focused one is yellow with a `*`; clicking one focuses it) and a `HH:MM` clock.
+- Keyboard (`src/keynav.ts`): `h/j/k/l` move a highlight between cards by real position (works with 1-4 columns), arrow keys do the same once a card is focused (before that they scroll as usual), `1`-`5` jump, `Enter` follows the focused card's first link, `Esc` clears. The focused card gets the `focused` class, which turns its border yellow. Nothing is focused until the first key, so mouse and touch users see no change.

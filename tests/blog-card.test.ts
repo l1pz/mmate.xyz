@@ -14,7 +14,11 @@ describe("blog card", () => {
 
     it("shows at most 5 posts", () => {
         const posts = Array.from({ length: 8 }, (_, i) => post(`p${i}`, "2026-01-01"));
-        expect(buildBlogCard(posts, 41, 32).toHtml().match(/<a /g)).toHaveLength(5);
+        expect(
+            buildBlogCard(posts, 41, 32)
+                .toHtml()
+                .match(/<a href="\/blog\/#/g),
+        ).toHaveLength(5);
     });
 
     it("truncates long titles so they fit inside every border", () => {

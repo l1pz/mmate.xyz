@@ -54,3 +54,38 @@
         gap: 1em 2ch;
     }
 }
+
+/* Colors for runs of card text (see CardStyle in src/card.ts). Theme variables only. */
+.c-title {
+    color: var(--yellow);
+}
+
+.c-border,
+.c-dim {
+    color: var(--gray);
+}
+
+.c-aqua {
+    color: var(--aqua);
+}
+
+.c-green {
+    color: var(--green);
+}
+
+.c-yellow {
+    color: var(--yellow);
+}
+
+.c-purple {
+    color: var(--purple);
+}
+
+.c-red {
+    color: var(--red);
+}
+
+/* The card the keyboard is on (see src/keynav.ts). */
+.card.focused .c-border {
+    color: var(--yellow);
+}
