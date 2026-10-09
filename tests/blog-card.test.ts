@@ -32,6 +32,14 @@ describe("blog card", () => {
         expect(text.indexOf("_m_______m_")).toBeLessThan(text.indexOf("2026-01-01"));
     });
 
+    it("fits 5 posts plus the binary footer in every border", () => {
+        const posts = Array.from({ length: 5 }, (_, i) => post(`p${i}`, "2026-01-01", "x".repeat(80)));
+        for (const style of [null, ...Object.values(borders)]) {
+            const text = buildBlogCard(posts, 41, 32, style).toString();
+            expect(text).toContain("01101011 01100101 01100101 01110000"); // "keep"
+        }
+    });
+
     it("shows a message when there are no posts", () => {
         expect(buildBlogCard([], 41, 32).toString()).toContain("no posts yet");
     });

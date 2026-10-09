@@ -6,6 +6,8 @@ import { getPosts } from "./posts";
 export const CARD_POSTS = 5;
 /** Widest row that fits inside the frame of a 41 column card. */
 const MAX_ROW = 39;
+/** Hidden binary message at the bottom, like the other cards. Keep it at most 16 characters (4 lines). */
+const FOOTER = "keep writing";
 
 const truncate = (s: string, max: number) => (s.length <= max ? s : `${s.slice(0, max - 1)}…`);
 
@@ -21,6 +23,8 @@ export function buildBlogCard(posts: Post[], width: number, height: number, bord
             card.emptyLine(2);
             if (posts.length === 0) {
                 card.drawTextCentered("no posts yet");
+                card.emptyLine(1);
+                card.drawBinaryTextCentered(FOOTER);
                 return;
             }
             const rows = posts.slice(0, CARD_POSTS).map((p) => ({
@@ -33,6 +37,7 @@ export function buildBlogCard(posts: Post[], width: number, height: number, bord
                 card.drawTextCentered(text.padEnd(widest), { label: text, href: `/blog/#${slug}` });
                 card.emptyLine(1);
             }
+            card.drawBinaryTextCentered(FOOTER);
         },
         border,
     );
