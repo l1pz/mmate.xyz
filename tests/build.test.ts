@@ -17,6 +17,13 @@ describe("production build", () => {
         expect(existsSync("dist/experiments/fluiddynamics/index.html")).toBe(true);
     });
 
+    it("ships the RSS feed", () => {
+        const feed = readFileSync("dist/feed.xml", "utf8");
+        expect(feed).toContain('<?xml version="1.0"');
+        expect(feed).toContain('<rss version="2.0"');
+        expect(feed).toContain("<channel>");
+    });
+
     it("ships the fonts the CSS asks for", () => {
         expect(existsSync("dist/fonts/stylesheet.css")).toBe(true);
         expect(existsSync("dist/fonts/DejaVuSansMono.woff2")).toBe(true);

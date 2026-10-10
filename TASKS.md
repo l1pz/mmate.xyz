@@ -22,7 +22,7 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - [x] Markdown loader + frontmatter (title, date, tags, slug)
 - [x] Blog card on home grid
 - [x] TUI reading view with progress meter (pager-style page, not a card; see DECISIONS.md)
-- [ ] RSS feed script
+- [x] RSS feed script
 
 ## Phase 2a: Design system (DESIGN.md)
 - [x] Step 1: shared shell (`src/core/shell.ts`, `styles/shell.css`); the blog uses it
@@ -125,6 +125,10 @@ Needs a short plan shown in the terminal before any code. Storage is decided: op
 ### Session 9b (2026-10-10)
 - Done: whole redesign in PR #14: #12 merged into the branch (and closed), phone rules, home page on the shell (`src/home.ts`, command-style card titles, whoami block), blog rows are full-width links, DESIGN.md/AGENTS.md/DECISIONS.md updated. Checked in the browser at desktop, 390px and 360px (narrow iframes; real phones and `pointer: coarse` still untested).
 - Next: user looks on a real phone; then Phase 2 "RSS feed script" or the parked home ideas (command prompt first).
+
+### Session 11 (2026-10-10)
+- Done (branch `feat/rss`): `/feed.xml` (RSS 2.0, full content) built by `plugins/rss-feed.js` from `src/features/blog/feed.ts`; served in dev too; discovery `<link>` in the head of home and blog; tests added. `posts/` is empty, so the feed has no items yet.
+- Next: Phase 3 tools, or the parked home ideas (command prompt first). The generated post index for the home page was left out on purpose (DECISIONS.md still says to replace the glob import when the blog grows).
 
 ### Session 10 (2026-10-10)
 - Done (branch `feat/consistency`): every page (home, blog index/post/not found, experiments, fluid dynamics) goes through `renderPage` and one status line; home is a session; cards retired from pages (engine kept); guard tests added. Checked in the browser at desktop and 360px; real phones still untested.
