@@ -15,7 +15,8 @@ src/core/html.ts, binary.ts             escapeHtml; binaryLines (hidden messages
 src/home.ts, src/index.ts               the home page (a session of commands); entry
 src/experiments-page.ts, src/experiments.ts   the experiments listing; entry
 src/features/blog/                      blog: loader, markdown, page (index, post, not found), rows (see below)
-src/blog.ts                             blog entry
+src/features/tools/                     tools: registry, page (list, tool, not found), ui helpers, `tools/<id>/{meta,index}.ts` (see below)
+src/blog.ts, src/tools.ts               blog and tools entries
 plugins/noscript-home.js                build/dev plugin: fills the <noscript> block of index.html with renderHome
 src/card.ts, borders.ts, ascii.ts       card engine (toolkit, unused by pages for now), border styles, bundled ASCII art
 src/ascii-art/                          ASCII art (.ascii), bundled at build time
@@ -59,6 +60,12 @@ Features never import each other; shared code goes in `src/core/`. This keeps ea
 - `page.ts`: renderers (`renderIndex`, `renderPost`, `renderNotFound`, all through `renderPage`) and `mount(el)`. Routing by hash: `/blog/` is the list, `/blog/#<slug>` a post, an unknown slug a "no such file" page. No router, no per-post HTML files.
 - No-JS: the page only shows a "needs javascript" note. Rendering posts into `<noscript>` at build time is a possible follow-up.
 - Known cost: the home page imports `posts.ts`, so every post body is in the home bundle. Fine for a few posts; replace with a generated post index (the RSS task will produce one) when the blog grows.
+
+### Tools (`src/features/tools/`, catalogue and build order in `TOOLS.md`)
+- One page, `/tools/`, with hash routing like the blog: `/tools/` is the list (`ls tools/`, grouped by category), `/tools/#<id>` one tool inside the page frame, an unknown id a `command not found` page. A tool never needs an HTML file, a `vite.config.js` line or a `site.ts` entry.
+- A tool is a folder `tools/<id>/`: `meta.ts` exports `meta` (`id` = folder name, `title`, `category`, `summary`, optional `access`, `secret`) and is loaded eagerly; `index.ts` exports `mount(el)` (may be async, may return a `cleanup()`) and is loaded only when the tool is opened, so each tool is its own chunk. Pure logic sits in its own file in the folder (e.g. `case/convert.ts`) so tests call it directly.
+- `registry.ts`: `loadTools` validates every `meta` (unique id, id = folder, known category, `secret` at most 32 characters) and throws with the file path; `publicTools`/`getPublicTool` hide `access: "private"` tools (backend tools for the owner behind Pocket ID, listed only in the admin later); `loadTool(id)` imports the code.
+- `page.ts` renders through `renderPage`, shows `loading...` while a chunk loads, and calls the previous tool's `cleanup()` on every route change. `ui.ts` has the shared form bits (`textInput`, `outputBox` with copy, `modePicker`), styled in `styles/tools.css`.
 
 ## Card engine (`src/card.ts`, kept as a toolkit)
 Pure logic, fully tested (`tests/card.test.ts`). The only DOM touch is `render()`. Cards are for future widgets (a table of contents, the Oracle, a clock), not for pages.

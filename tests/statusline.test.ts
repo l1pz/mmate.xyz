@@ -36,11 +36,12 @@ describe("formatClock", () => {
 
 describe("windowsHtml", () => {
     it("lists the same site windows on every page, as links to the pages", () => {
-        for (const id of ["home", "blog", "experiments", "fluiddynamics"]) {
+        for (const id of ["home", "blog", "tools", "experiments", "fluiddynamics"]) {
             const html = windowsHtml(getPage(id));
             expect(html).toContain('href="/">1:home');
             expect(html).toContain('href="/blog/">2:blog');
-            expect(html).toContain('href="/experiments/">3:exp');
+            expect(html).toContain('href="/tools/">3:tools');
+            expect(html).toContain('href="/experiments/">4:exp');
         }
     });
 
@@ -51,7 +52,7 @@ describe("windowsHtml", () => {
     });
 
     it("keeps the parent's window current on a child page", () => {
-        expect(windowsHtml(getPage("fluiddynamics"))).toContain('class="win active" href="/experiments/">3:exp*</a>');
+        expect(windowsHtml(getPage("fluiddynamics"))).toContain('class="win active" href="/experiments/">4:exp*</a>');
     });
 });
 

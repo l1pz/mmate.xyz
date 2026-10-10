@@ -1,0 +1,73 @@
+/** Small DOM helpers shared by tools. Styles are in `styles/tools.css`. Only used from `mount`, so logic stays testable. */
+
+function el<K extends keyof HTMLElementTagNameMap>(
+    tag: K,
+    className: string,
+    props: Partial<HTMLElementTagNameMap[K]> = {},
+): HTMLElementTagNameMap[K] {
+    const node = document.createElement(tag);
+    node.className = className;
+    return Object.assign(node, props);
+}
+
+/** A labelled multi-line text input. */
+export function textInput(label: string, placeholder = ""): { wrap: HTMLElement; input: HTMLTextAreaElement } {
+    const wrap = el("label", "field");
+    const text = el("span", "dim", { textContent: label });
+    const input = el("textarea", "", { placeholder, rows: 6, spellcheck: false });
+    input.autocapitalize = "off";
+    wrap.append(text, input);
+    return { wrap, input };
+}
+
+/** A labelled read-only result box with a copy button. */
+export function outputBox(label: string): { wrap: HTMLElement; set: (text: string) => void } {
+    const wrap = el("div", "field");
+    const text = el("span", "dim", { textContent: label });
+    const box = el("textarea", "", { readOnly: true, rows: 6, spellcheck: false });
+    const copy = button("copy", async () => {
+        try {
+            await navigator.clipboard.writeText(box.value);
+            copy.textContent = "copied";
+        } catch {
+            box.select(); // clipboard blocked: leave the text selected for a manual copy
+            copy.textContent = "select + copy";
+        }
+        setTimeout(() => {
+            copy.textContent = "copy";
+        }, 1500);
+    });
+    wrap.append(text, box, copy);
+    return {
+        wrap,
+        set: (value) => {
+            box.value = value;
+        },
+    };
+}
+
+export function button(label: string, onClick: () => void): HTMLButtonElement {
+    return el("button", "btn", { type: "button", textContent: label, onclick: onClick });
+}
+
+/** A wrapping row of buttons where exactly one is `active` (a mode picker). */
+export function modePicker<T extends string>(
+    modes: readonly { id: T; label: string }[],
+    initial: T,
+    onPick: (id: T) => void,
+): HTMLElement {
+    const row = el("div", "buttons");
+    const buttons: HTMLButtonElement[] = modes.map((m) =>
+        button(m.label, () => {
+            buttons.forEach((b, i) => {
+                b.classList.toggle("active", modes[i].id === m.id);
+            });
+            onPick(m.id);
+        }),
+    );
+    buttons.forEach((b, i) => {
+        b.classList.toggle("active", modes[i].id === initial);
+    });
+    row.append(...buttons);
+    return row;
+}

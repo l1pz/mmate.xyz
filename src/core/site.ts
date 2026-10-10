@@ -29,6 +29,7 @@ export interface SitePage {
 export const pages: SitePage[] = [
     { id: "home", path: "/", window: "home", name: "1000110.xyz", section: "home", pattern: "session" },
     { id: "blog", path: "/blog/", window: "blog", name: "blog", section: "blog", pattern: "listing" },
+    { id: "tools", path: "/tools/", window: "tools", name: "tools", section: "tools", pattern: "listing" },
     {
         id: "experiments",
         path: "/experiments/",

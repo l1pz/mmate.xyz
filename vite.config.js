@@ -13,6 +13,7 @@ export default defineConfig({
             input: {
                 main: page("index.html"),
                 blog: page("blog/index.html"),
+                tools: page("tools/index.html"),
                 experiments: page("experiments/index.html"),
                 fluiddynamics: page("experiments/fluiddynamics/index.html"),
             },

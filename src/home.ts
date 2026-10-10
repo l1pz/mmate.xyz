@@ -29,7 +29,7 @@ export function renderHome(date: Date): string {
         section("ls ~/blog", postRows(getPosts().slice(0, HOME_POSTS), "/blog/")),
         section(
             "ls projects/",
-            '<a class="row" href="https://github.com/l1pz/">github</a>\n<a class="row" href="/experiments/">experiments/</a>',
+            '<a class="row" href="https://github.com/l1pz/">github</a>\n<a class="row" href="/tools/">tools/</a>\n<a class="row" href="/experiments/">experiments/</a>',
             "bmljZSBjYXRjaA==",
         ),
         section(
