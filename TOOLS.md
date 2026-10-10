@@ -47,10 +47,18 @@ Ask the user before adding any browser dependency. Heavy ones (ffmpeg, PDF, HEIC
 - **Listing rows** are one link each: `id/  summary`, same row style as the blog. Home gets a `tools/` row under `ls projects/`.
 - **First tool** proves the shape: the case converter (item 9, tiny); the text counter is still open.
 
+## Encode / decode design (item 1, implemented)
+- `tools/encode/codec.ts` (pure): `CODECS`, `run(id, direction, text, variant?)` returns `{ text, note? }`; failures throw `CodecError` and the page shows `error: ...` under the output instead of crashing.
+- Variants (second row of buttons, first is the default): hex `lower | upper | compact`, base64 `standard | url-safe`, url `component | full url | form (+)`. Decoding is tolerant: Base64 takes both alphabets and no padding, hex takes `0x` and commas, binary takes one unbroken run.
+- Byte codecs work on UTF-8. Bytes that are not valid UTF-8 (an image, gzip) are shown as hex with a note, not an error.
+- "use output as input" moves the result into the input and flips encode/decode, so chains (URL, then Base64) are one tap each.
+- No URL-hash state: the hash is already the tool route (`/tools/#encode`).
+- Candidates for later: Base32 (TOTP secrets), Base58, Punycode, quoted-printable. Unicode escapes belong to "Escape / unescape strings".
+
 ## First ten (build order)
 Cheap, popular, no dependency.
 - [x] 0. Registry + `/tools/` listing + one tool page shape (done with the case converter as the first tool)
-- [ ] 1. Encode / decode playground: binary, hex, Base64, ROT13, URL, HTML entities, Morse [T]
+- [x] 1. Encode / decode playground: binary, hex, Base64, ROT13, URL, HTML entities, Morse [T]
 - [ ] 2. Hash generator: MD5, SHA-1/256/512, HMAC [API]
 - [ ] 3. Password and passphrase generator with entropy meter [API]
 - [ ] 4. JSON formatter, validator, minifier [T]

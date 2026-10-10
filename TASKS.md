@@ -139,3 +139,7 @@ Needs a short plan shown in the terminal before any code. Storage is decided: op
 ### Session 12 (2026-10-10)
 - Done (branch `docs/tools-list`): `TOOLS.md` catalogue (public browser tools, private backend tools, YouTube to MP3 as a private tool) and Phase 3 task 0: the tools registry (`src/features/tools/`, `/tools/`, folder-per-tool with lazy chunks, `access` field) with the case converter as the first tool; status line is now `1:home 2:blog 3:tools 4:exp`. `npm run check` passes; looked at in the browser at desktop, 360 and 390 wide (iframes). Real phone untested.
 - Next: `TOOLS.md` first ten, item 1 (encode/decode playground); private tools wait for Phase 6a.
+
+### Session 13 (2026-10-11)
+- Done (branch `feat/encode-decode`): encode/decode tool (`tools/encode/`: binary, hex, base64, rot13, url, html, morse; variants, swap button, hex fallback for non-UTF-8); `statusLine` and `buttonRow` added to `ui.ts`. `npm run check` passes; used in the browser, no overflow at 360 and 390 (iframes). Real phone untested.
+- Next: `TOOLS.md` first ten, item 2 (hash generator).
