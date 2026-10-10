@@ -50,6 +50,25 @@ export function button(label: string, onClick: () => void): HTMLButtonElement {
     return el("button", "btn", { type: "button", textContent: label, onclick: onClick });
 }
 
+/** A wrapping row for plain action buttons. */
+export function buttonRow(...buttons: HTMLButtonElement[]): HTMLElement {
+    const row = el("div", "buttons");
+    row.append(...buttons);
+    return row;
+}
+
+/** One line under a result: a dim note, or a red error. Empty text hides it. */
+export function statusLine(): { node: HTMLElement; set: (text: string, error?: boolean) => void } {
+    const node = el("p", "status dim");
+    return {
+        node,
+        set: (text, error = false) => {
+            node.textContent = text;
+            node.classList.toggle("error", error);
+        },
+    };
+}
+
 /** A wrapping row of buttons where exactly one is `active` (a mode picker). */
 export function modePicker<T extends string>(
     modes: readonly { id: T; label: string }[],

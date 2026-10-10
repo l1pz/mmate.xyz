@@ -73,6 +73,15 @@
     margin-top: 0.6em;
 }
 
+.tool .status {
+    min-height: 1.4em;
+    margin: -0.8em 0 1.4em;
+}
+
+.tool .status.error {
+    color: var(--red);
+}
+
 /* Touch screens: 44px tap targets, and 16px text in inputs so iOS does not zoom in when they are focused. */
 @media (pointer: coarse) {
     .tool .btn {
