@@ -3,7 +3,7 @@
 The swiss army knife part of 1000110.xyz: many small tools, one simple site. This file is the idea list and the build order for Phase 3 in `TASKS.md`. Pick the first unchecked tool unless told otherwise.
 
 ## Principles
-- **Client-side only.** Nothing is uploaded. Privacy is a feature and it keeps the server static.
+- **Public tools run in the browser.** Nothing is uploaded, and the site can say so. Heavy or network tools run on the backend and are **private**: behind Pocket ID, usable only by the owner, never listed publicly (see "Private tools").
 - **Zero bloat.** Plain TypeScript first. Any runtime dependency needs the user's OK (see "Dependency gate").
 - **One registry.** Every tool is a small module (`id`, `title`, `category`, `run`, optional UI). `/tools/` lists them like `ls tools/`; `site.ts` and `vite.config.js` stay small. Details are decided in the first task below, not here.
 - **Same look.** `renderPage`, Gruvbox variables, phone first (check 360px and 390px), keyboard friendly. A `/` or `Ctrl-K` command palette comes almost free once the registry exists.
@@ -12,17 +12,44 @@ The swiss army knife part of 1000110.xyz: many small tools, one simple site. Thi
 Tags: **[T]** plain TypeScript, **[API]** browser API, **[LIB]** needs a library (approval), **[SRV]** needs a server or third party.
 
 ## Dependency gate
-Ask the user before adding any of these. Group them on one "media lab" page so the cost is paid once and never touches the other tools.
-- `ffmpeg.wasm` for audio/video: core is about 32 MB, lazy-load it; multi-threading needs cross-origin isolation headers (COOP/COEP) on nginx; phones have memory limits.
+Ask the user before adding any browser dependency. Heavy ones (ffmpeg, PDF, HEIC) are meant to run on the backend as private tools instead, so they stay out of the public bundle.
+- `ffmpeg.wasm` (only if a public in-browser audio/video tool is ever wanted): core is about 32 MB, lazy-load it; multi-threading needs cross-origin isolation headers (COOP/COEP) on nginx; phones have memory limits.
 - A PDF library (merge, split, text to PDF), a HEIC decoder, a ZIP library, a YAML/TOML/XML parser, a SQL formatter, bcrypt.
 
 ## Not planned
-- **YouTube to MP3.** Needs a server that downloads from YouTube: breaks their ToS, copyright and takedown risk, gets blocked and abused. The legal version is "extract audio from a video file you drop in" (media lab).
-- Whois, ping, traceroute, SSL checker, currency rates: need a server or a third-party API and attract abuse. Revisit after the admin/backend work (Phase 6a).
+- **YouTube to MP3 as a public tool.** Breaks YouTube's ToS and invites abuse and takedowns. It exists only as a private tool (below).
+- Public server tools. Anything that needs the backend is private (below), so abuse is not a concern, but the tool still needs the Phase 6a backend first. Whois, ping, traceroute, SSL checker and currency rates are fine as private tools once it exists.
+
+## Private tools (backend, after Phase 6a)
+- Tools that need the server (ffmpeg, PDF, HEIC, whois, ping, SSL checks, ...) are protected by Pocket ID forward auth on `/api/` and `/admin/`, like the admin. Only the owner can call them. They share the Phase 6a service; no second backend.
+- Their `meta` has `access: "private"` (public tools: `"public"`, the default). The public `/tools/` listing, the command palette and the home row show only public tools, so nothing private is advertised; private tools appear in the admin shell (`ls modules/tools/`).
+- Same tool folder format as public tools: the `index.ts` calls `/api/tools/<id>`. Keep per-file size, timeout and concurrency caps anyway (the server also runs the Oracle).
+- Not part of task 0: the registry only carries the `access` field and filters on it. No private tool exists until the backend does.
+
+## How to add a tool
+1. Make `src/features/tools/tools/<id>/meta.ts` (`export const meta: ToolMeta`) and `index.ts` (`export function mount(el)`); keep the logic in a pure file next to them.
+2. Test the pure logic in `tests/`. The registry test already checks the meta and that `index.ts` exists.
+3. Nothing else: no HTML file, no `site.ts` entry, no `vite.config.js` line.
+
+## Private tool ideas (need the Phase 6a backend)
+- [ ] YouTube / video URL to MP3 or MP4 with `yt-dlp` (+ ffmpeg) on the server, owner only (the owner already uses `yt-dlp` on the command line and accepts the ToS risk). Keep `yt-dlp` updatable without a site deploy (it breaks whenever YouTube changes); the server IP may get blocked.
+- [ ] Audio/video convert, trim, GIF maker, extract audio from a file (ffmpeg)
+- [ ] PDF merge, split, text to PDF; HEIC to JPG; ZIP
+- [ ] Whois, ping, traceroute, SSL certificate checker, currency rates
+
+## Registry design (task 0, implemented)
+- **One page, hash routing, like the blog.** `/tools/` is the listing (`ls tools/`, grouped by category); `/tools/#<id>` is a tool inside the page frame. One new HTML file and one `site.ts` entry (`tools`, window `tools`, pattern `listing`); a tool never needs an HTML file, a `vite.config.js` line or a `site.ts` entry.
+- **A tool is a folder** `src/features/tools/tools/<id>/` with `meta.ts` (loaded eagerly: `id`, `title`, `category`, `summary`, optional `access`, optional `secret`) and `index.ts` (loaded only when the tool is opened, so each tool is its own chunk). Extra files (helpers, a Web Worker, CSS) live in the same folder. `registry.ts` finds the metas with `import.meta.glob`, validates them (unique id, known category, `id` = folder name) and throws at load time like the blog loader.
+- **`mount(el)` may be async** (the page shows `$ loading...` meanwhile) and may return a `cleanup()` that the page calls when you leave the tool.
+- **Logic is pure and separate from the DOM** inside the tool folder (exported functions), so tests call them directly; `mount` only wires a form to them.
+- **Shared bits** in `src/features/tools/ui.ts` (labelled textarea, output box with a copy button, button row) and `styles/tools.css`, colors from theme variables only, 44px tap targets, no hover needs.
+- **Frame:** the tool page is `renderPage` with `$ <id>` as the command and crumbs `1000110.xyz / tools / <id>`; `b`/Esc goes back to the list.
+- **Listing rows** are one link each: `id/  summary`, same row style as the blog. Home gets a `tools/` row under `ls projects/`.
+- **First tool** proves the shape: the case converter (item 9, tiny); the text counter is still open.
 
 ## First ten (build order)
 Cheap, popular, no dependency.
-- [ ] 0. Registry + `/tools/` listing + one tool page shape (plan shown in the terminal first)
+- [x] 0. Registry + `/tools/` listing + one tool page shape (done with the case converter as the first tool)
 - [ ] 1. Encode / decode playground: binary, hex, Base64, ROT13, URL, HTML entities, Morse [T]
 - [ ] 2. Hash generator: MD5, SHA-1/256/512, HMAC [API]
 - [ ] 3. Password and passphrase generator with entropy meter [API]
@@ -31,7 +58,7 @@ Cheap, popular, no dependency.
 - [ ] 6. Unix timestamp and time zone converter [API]
 - [ ] 7. Regex tester with explanation [T]
 - [ ] 8. Color converter (HEX, RGB, HSL) and contrast checker [T]
-- [ ] 9. Case converter and text counter [T]
+- [ ] 9. Case converter [T] (done) and text counter (left)
 - [ ] 10. Diff checker [T]
 
 Existing Phase 3 items map here: playground = 1, JSON formatter = 4, scratchpad = Writing / life below. Image to ASCII / dither studio and the fluid dynamics experiment stay in `TASKS.md`.

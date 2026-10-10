@@ -50,7 +50,7 @@ Fixed at the bottom, same on every page:
 | session | home | one command per section: `$ whoami`, `$ cat portrait.txt`, `$ ls ~/blog`, ... with ASCII art in tight blocks |
 | listing | blog index, experiments, the lists on the home page | rows of one link each (`ls -l` style); the row is the tap target (44px on touch) |
 | prose | a blog post | left-aligned column, headings with a dim `#` marker, boxed code, dimmed quotes |
-| tool | an experiment | the frame, with the canvas or form as the body |
+| tool | an experiment, a page of `/tools/` | the frame, with the canvas or form as the body; tools use the shared form bits of `styles/tools.css` (bordered inputs, outlined buttons, the active mode in yellow) |
 | later | gallery, oracle | gallery: listing of albums, a post-like viewer; oracle: a feed inside the frame |
 Cards (the fixed 41 x 32 character tile, `src/card.ts`) are not a page pattern. The engine stays as a toolkit for future widgets.
 

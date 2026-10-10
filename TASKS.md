@@ -137,5 +137,5 @@ Needs a short plan shown in the terminal before any code. Storage is decided: op
 - Also: the two sample posts (`hello-world`, `markdown-demo`) are removed; `posts/` keeps a `.gitkeep`, so the blog and the home blog section show "(nothing here yet)" until the first real post. Tests no longer depend on bundled posts (`blog-rows.test.ts` uses fixtures). Markdown features are still shown in `tests/blog-markdown.test.ts`.
 
 ### Session 12 (2026-10-10)
-- Done (branch `docs/tools-list`): `TOOLS.md` tools catalogue with principles, dependency gate, "not planned" (YouTube to MP3) and a first-ten build order; Phase 3 in this file now points to it.
-- Next: Phase 3 task 0 (registry + `/tools/` listing); needs a plan shown in the terminal first.
+- Done (branch `docs/tools-list`): `TOOLS.md` catalogue (public browser tools, private backend tools, YouTube to MP3 as a private tool) and Phase 3 task 0: the tools registry (`src/features/tools/`, `/tools/`, folder-per-tool with lazy chunks, `access` field) with the case converter as the first tool; status line is now `1:home 2:blog 3:tools 4:exp`. `npm run check` passes; looked at in the browser at desktop, 360 and 390 wide (iframes). Real phone untested.
+- Next: `TOOLS.md` first ten, item 1 (encode/decode playground); private tools wait for Phase 6a.

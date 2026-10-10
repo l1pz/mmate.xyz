@@ -1,0 +1,85 @@
+/* The tools page (DESIGN.md "tool" pattern): the listing and the shared form bits tools use. */
+
+/* A listing row with two columns: the tool name and a dim summary that wraps inside its own column. */
+.tool-row {
+    display: grid;
+    grid-template-columns: 11ch 1fr;
+    gap: 0 2ch;
+}
+
+.group {
+    margin-bottom: 1.4em;
+}
+
+/* Form bits */
+.tool .field {
+    display: block;
+    margin-bottom: 1.4em;
+}
+
+.tool .field > .dim {
+    display: block;
+    margin-bottom: 0.2em;
+}
+
+.tool textarea {
+    display: block;
+    width: 100%;
+    padding: 0.5em 1ch;
+    border: 1px solid var(--gray);
+    border-radius: 0;
+    background: var(--bg-soft);
+    color: var(--fg);
+    font: inherit;
+    line-height: 1.4;
+    resize: vertical;
+    user-select: text;
+}
+
+.tool textarea:focus {
+    outline: 1px solid var(--yellow);
+    border-color: var(--yellow);
+}
+
+.tool .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em 1ch;
+    margin-bottom: 1.4em;
+}
+
+.tool .btn {
+    min-height: 2.2em;
+    padding: 0 1.5ch;
+    border: 1px solid var(--gray);
+    border-radius: 0;
+    background: transparent;
+    color: var(--fg);
+    font: inherit;
+    cursor: pointer;
+}
+
+.tool .btn:hover {
+    border-color: var(--yellow);
+}
+
+.tool .btn.active {
+    border-color: var(--yellow);
+    background: var(--yellow);
+    color: var(--bg);
+}
+
+.tool .field > .btn {
+    margin-top: 0.6em;
+}
+
+/* Touch screens: 44px tap targets, and 16px text in inputs so iOS does not zoom in when they are focused. */
+@media (pointer: coarse) {
+    .tool .btn {
+        min-height: 44px;
+    }
+
+    .tool textarea {
+        font-size: 16px;
+    }
+}

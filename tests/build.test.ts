@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { beforeAll, describe, expect, it } from "vitest";
 import { pages } from "../src/core/site";
 import { assertShell } from "./helpers/shell";
@@ -13,8 +13,21 @@ describe("production build", () => {
     it("contains every page", () => {
         expect(existsSync("dist/index.html")).toBe(true);
         expect(existsSync("dist/blog/index.html")).toBe(true);
+        expect(existsSync("dist/tools/index.html")).toBe(true);
         expect(existsSync("dist/experiments/index.html")).toBe(true);
         expect(existsSync("dist/experiments/fluiddynamics/index.html")).toBe(true);
+    });
+
+    it("splits every tool into its own chunk, loaded when the tool is opened", () => {
+        const html = readFileSync("dist/tools/index.html", "utf8");
+        expect(html).toContain("/assets/");
+        const chunks = readdirSync("dist/assets").filter((f) => f.endsWith(".js"));
+        const tool = chunks
+            .map((f) => readFileSync(`dist/assets/${f}`, "utf8"))
+            .find((js) => js.includes("snake_case"));
+        expect(tool, "a chunk with the case converter").toBeDefined();
+        const entry = html.match(/src="(\/assets\/[^"]+\.js)"/)?.[1] ?? "";
+        expect(readFileSync(`dist${entry}`, "utf8")).not.toContain("snake_case");
     });
 
     it("ships the RSS feed", () => {
