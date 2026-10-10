@@ -4,6 +4,9 @@
  */
 import type { Crumb } from "./shell";
 
+/** The public address of the site, without a trailing slash (feed links must be absolute). */
+export const SITE_URL = "https://1000110.xyz";
+
 /** What kind of content the page has (see DESIGN.md section 4). */
 export type Pattern = "session" | "listing" | "prose" | "tool";
 

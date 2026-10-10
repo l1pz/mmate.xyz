@@ -1,12 +1,13 @@
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import noscriptHome from "./plugins/noscript-home.js";
+import rssFeed from "./plugins/rss-feed.js";
 
 const page = (path) => resolve(import.meta.dirname, path);
 
 // Every HTML page must be listed here, or it is missing from the production build.
 export default defineConfig({
-    plugins: [noscriptHome()],
+    plugins: [noscriptHome(), rssFeed()],
     build: {
         rollupOptions: {
             input: {
