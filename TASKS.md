@@ -50,11 +50,12 @@ Pick the first unchecked task. One task per session. Log a 2-line handoff at the
 - Living cards: clock, a "now" card (building / listening), the typewriter typing a line, animated art; the Oracle is the big version
 - Later, on the blog: table-of-contents widget card beside a post (wide screens), build-time `<noscript>` posts
 
-## Phase 3: Tools
-- [ ] Binary / Base64 / Hex / ROT13 playground
+## Phase 3: Tools (the full catalogue and build order live in `TOOLS.md`)
+- [ ] Tools registry + `/tools/` listing + the first ten tools, in the order of `TOOLS.md` (includes the encode/decode playground and the JSON formatter)
 - [ ] Image to ASCII / dither studio
 - [ ] Fluid dynamics experiment (currently an empty stub)
-- [ ] Scratchpad + JSON formatter
+- [ ] Scratchpad (see `TOOLS.md`, Writing / life)
+- [ ] Rest of the `TOOLS.md` catalogue, one tool per session
 
 ## Phase 4: Gallery
 - [ ] Gallery card, dither/ASCII <-> raw photo view, albums
@@ -134,3 +135,7 @@ Needs a short plan shown in the terminal before any code. Storage is decided: op
 - Done (branch `feat/consistency`): every page (home, blog index/post/not found, experiments, fluid dynamics) goes through `renderPage` and one status line; home is a session; cards retired from pages (engine kept); guard tests added. Checked in the browser at desktop and 360px; real phones still untested.
 - Next: user looks; then Phase 2 "RSS feed script" (can also generate the post index the home page needs later) or the parked home ideas (command prompt first).
 - Also: the two sample posts (`hello-world`, `markdown-demo`) are removed; `posts/` keeps a `.gitkeep`, so the blog and the home blog section show "(nothing here yet)" until the first real post. Tests no longer depend on bundled posts (`blog-rows.test.ts` uses fixtures). Markdown features are still shown in `tests/blog-markdown.test.ts`.
+
+### Session 12 (2026-10-10)
+- Done (branch `docs/tools-list`): `TOOLS.md` tools catalogue with principles, dependency gate, "not planned" (YouTube to MP3) and a first-ten build order; Phase 3 in this file now points to it.
+- Next: Phase 3 task 0 (registry + `/tools/` listing); needs a plan shown in the terminal first.
